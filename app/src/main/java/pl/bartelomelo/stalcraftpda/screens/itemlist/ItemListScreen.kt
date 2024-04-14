@@ -1,6 +1,7 @@
 package pl.bartelomelo.stalcraftpda.screens.itemlist
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import pl.bartelomelo.stalcraftpda.data.remote.responses.ItemListItem
+import pl.bartelomelo.stalcraftpda.util.StalcraftButton
 
 @Composable
 fun ItemListScreen(
@@ -34,7 +35,7 @@ fun ItemListScreen(
     Surface(
         modifier = Modifier
             .fillMaxSize(),
-        color = Color.DarkGray
+        color = Color(39, 39,47)
     ) {
         Box(
             modifier = Modifier
@@ -58,8 +59,9 @@ fun ItemEntry(
         modifier = Modifier
             .fillMaxWidth()
             .height(40.dp)
-            .clip(RoundedCornerShape(5.dp))
-            .background(Color.Gray)
+            .clip(StalcraftButton())
+            .border(width = 1.dp, color = Color.White, StalcraftButton())
+            .background(Color(55, 55, 64))
             .clickable {
 
             }

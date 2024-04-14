@@ -27,3 +27,33 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+//@Preview
+//@Composable
+//fun StalcraftButton(){
+//    StalcraftPDATheme {
+//        val rightCorner = with(LocalDensity.current) { 35.dp.toPx() }
+//        val rightIndentation = with(LocalDensity.current) { 285.dp.toPx() }
+//        val secondRightIndentation = with(LocalDensity.current) { 270.dp.toPx() }
+//
+//        Box(modifier = Modifier
+//            .size(width = 300.dp, height = 50.dp)
+//            .drawBehind {
+//                val path = Path().apply {
+//                    moveTo(0f, 0f)
+//                    lineTo(size.width, 0f)
+//                    lineTo(size.width, rightCorner)
+//                    lineTo(rightIndentation, rightCorner)
+//                    lineTo(secondRightIndentation, size.height)
+//                    lineTo(0f, size.height)
+//
+//                    close()
+//                }
+//                drawPath(
+//                    path = path, color = Color.DarkGray
+//                )
+//            }) {
+//            Text(text = "SIEMA")
+//        }
+//    }
+//}
