@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import pl.bartelomelo.stalcraftpda.R
 
 @Composable
-fun PdaOverlay() {
+fun PdaOverlay(phoneScreen: @Composable () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -43,7 +43,7 @@ fun PdaOverlay() {
                 .fillMaxSize()
                 .padding(5.dp),
             shape = RoundedCornerShape(15.dp),
-            colors = CardDefaults.cardColors(Color.Yellow)
+            colors = CardDefaults.cardColors(Color(0xFFFFAA00))
         ) {
             Card(
                 modifier = Modifier
@@ -178,7 +178,7 @@ fun PdaOverlay() {
                     shape = RoundedCornerShape(5.dp),
                     colors = CardDefaults.cardColors(Color.White)
                 ) {
-                    Text(text = "BARTELOMELON")
+                    phoneScreen()
                 }
 
             }
