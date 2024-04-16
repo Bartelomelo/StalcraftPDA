@@ -18,4 +18,13 @@ class DbRepository @Inject constructor(
         }
         return Resource.Success(response)
     }
+
+    suspend fun getItemCategoryList(itemCategory: String): Resource<ItemList> {
+        val response = try {
+            api.getItemCategoryList(itemCategory)
+        } catch (e: Exception) {
+            return Resource.Error("Unknown Error.")
+        }
+        return Resource.Success(response)
+    }
 }

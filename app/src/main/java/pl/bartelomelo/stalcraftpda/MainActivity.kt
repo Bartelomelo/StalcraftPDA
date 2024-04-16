@@ -3,10 +3,13 @@ package pl.bartelomelo.stalcraftpda
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
+import pl.bartelomelo.stalcraftpda.screens.itemcategoryscreen.ItemCategoryScreen
 import pl.bartelomelo.stalcraftpda.screens.itemlist.ItemListScreen
 import pl.bartelomelo.stalcraftpda.ui.theme.StalcraftPDATheme
 import pl.bartelomelo.stalcraftpda.util.PdaOverlay
@@ -22,38 +25,24 @@ class MainActivity : ComponentActivity() {
                     composable("item_list_screen") {
                         PdaOverlay { ItemListScreen(navController) }
                     }
+                    composable(
+                        "item_category_screen/global/{item}/{category}",
+                        arguments = listOf(
+                            navArgument("item") {
+                                type = NavType.StringType
+                            },
+                            navArgument("category") {
+                                type = NavType.StringType
+                            }
+                        )
+                    ) {
+                        val route = it.arguments?.getString("category")
+                        PdaOverlay {
+                            ItemCategoryScreen(navController = navController, route = route!!)
+                        }
+                    }
                 }
             }
         }
     }
 }
-
-//@Preview
-//@Composable
-//fun StalcraftButton(){
-//    StalcraftPDATheme {
-//        val rightCorner = with(LocalDensity.current) { 35.dp.toPx() }
-//        val rightIndentation = with(LocalDensity.current) { 285.dp.toPx() }
-//        val secondRightIndentation = with(LocalDensity.current) { 270.dp.toPx() }
-//
-//        Box(modifier = Modifier
-//            .size(width = 300.dp, height = 50.dp)
-//            .drawBehind {
-//                val path = Path().apply {
-//                    moveTo(0f, 0f)
-//                    lineTo(size.width, 0f)
-//                    lineTo(size.width, rightCorner)
-//                    lineTo(rightIndentation, rightCorner)
-//                    lineTo(secondRightIndentation, size.height)
-//                    lineTo(0f, size.height)
-//
-//                    close()
-//                }
-//                drawPath(
-//                    path = path, color = Color.DarkGray
-//                )
-//            }) {
-//            Text(text = "SIEMA")
-//        }
-//    }
-//}

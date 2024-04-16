@@ -1,4 +1,4 @@
-package pl.bartelomelo.stalcraftpda.screens.itemlist
+package pl.bartelomelo.stalcraftpda.screens.itemcategoryscreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,8 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,18 +23,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import pl.bartelomelo.stalcraftpda.data.remote.responses.ItemList
 import pl.bartelomelo.stalcraftpda.data.remote.responses.ItemListItem
+import pl.bartelomelo.stalcraftpda.util.Resource
 import pl.bartelomelo.stalcraftpda.util.StalcraftButton
+import pl.bartelomelo.stalcraftpda.util.bulletInventory
+import pl.bartelomelo.stalcraftpda.util.medicineInventory
 
 @Composable
-fun ItemListScreen(
+fun ItemCategoryScreen(
     navController: NavController,
-    viewModel: ItemListViewModel = hiltViewModel()
+    route: String
 ) {
     Surface(
         modifier = Modifier
             .fillMaxSize(),
-        color = Color(39, 39,47)
+        color = Color(39, 39, 47)
     ) {
         Box(
             modifier = Modifier
@@ -43,13 +46,13 @@ fun ItemListScreen(
             contentAlignment = Alignment.Center
 
         ) {
-            ItemList(navController = navController)
+            ItemCategoryList(navController = navController, route = route)
         }
     }
 }
 
 @Composable
-fun ItemEntry(
+fun ItemCategoryEntry(
     entry: ItemListItem,
     navController: NavController,
     modifier: Modifier = Modifier,
@@ -63,45 +66,72 @@ fun ItemEntry(
             .border(width = 1.dp, color = Color.White, StalcraftButton())
             .background(Color(55, 55, 64))
             .clickable {
-                navController.navigate(
-                    "item_category_screen/${entry.path}"
-                )
+//                navController.navigate(
+//                    "item_category_screen/${entry.path}"
+//                )
             }
     ) {
         Column {
-            Text(
-                text = entry.name,
-                color = Color.White
-            )
+            when(entry.path.split("/")[2]) {
+                "medicine" -> {
+                    medicineInventory[entry.name]?.let {
+                        Text(
+                            text = it,
+                            color = Color.White
+                        )
+                    }
+                }
+                "bullet" -> {
+                    bulletInventory[entry.name]?.let {
+                        Text(
+                            text = it,
+                            color = Color.White
+                        )
+                    }
+                }
+                else -> {
+                    Text(
+                        text = entry.name,
+                        color = Color.White
+                    )
+                }
+            }
         }
     }
 }
 
 @Composable
-fun ItemList(
+fun ItemCategoryList(
     navController: NavController,
-    viewModel: ItemListViewModel = hiltViewModel()
+    viewModel: ItemCategoryViewModel = hiltViewModel(),
+    route: String
 ) {
-    val itemList by remember {
-        viewModel.itemList
-    }
+    val itemList = produceState<Resource<ItemList>>(initialValue = Resource.Loading()) {
+        value = viewModel.getItemCategoryList(route)
+    }.value
 
-    LazyColumn(contentPadding = PaddingValues(15.dp)) {
-        items(itemList.size) {
-            ItemRow(rowIndex = it, entries = itemList, navController = navController)
+    if (itemList is Resource.Success) {
+        LazyColumn(contentPadding = PaddingValues(15.dp)) {
+            items(itemList.data!!.size) {
+                ItemCategoryRow(
+                    rowIndex = it,
+                    entries = itemList.data,
+                    navController = navController
+                )
+            }
         }
     }
 }
 
 @Composable
-fun ItemRow(
+fun ItemCategoryRow(
     rowIndex: Int,
     entries: List<ItemListItem>,
     navController: NavController
 ) {
     Column {
         Row {
-            ItemEntry(
+            ItemCategoryEntry(
                 entry = entries[rowIndex],
                 navController = navController,
                 modifier = Modifier.weight(1f)
