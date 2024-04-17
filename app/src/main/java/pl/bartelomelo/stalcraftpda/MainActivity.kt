@@ -3,6 +3,7 @@ package pl.bartelomelo.stalcraftpda
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.material3.Text
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -39,6 +40,16 @@ class MainActivity : ComponentActivity() {
                         val route = it.arguments?.getString("category")
                         PdaOverlay {
                             ItemCategoryScreen(navController = navController, route = route!!)
+                        }
+                    }
+                    composable("item_subcategory_screen") {
+                        PdaOverlay {
+                            Text(text = "Item subcategory screen!")
+                        }
+                    }
+                    composable("item_detail_screen") {
+                        PdaOverlay {
+                            Text(text = "Item detail screen!")
                         }
                     }
                 }

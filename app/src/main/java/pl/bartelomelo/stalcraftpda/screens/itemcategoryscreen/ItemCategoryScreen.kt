@@ -27,8 +27,6 @@ import pl.bartelomelo.stalcraftpda.data.remote.responses.ItemList
 import pl.bartelomelo.stalcraftpda.data.remote.responses.ItemListItem
 import pl.bartelomelo.stalcraftpda.util.Resource
 import pl.bartelomelo.stalcraftpda.util.StalcraftButton
-import pl.bartelomelo.stalcraftpda.util.bulletInventory
-import pl.bartelomelo.stalcraftpda.util.medicineInventory
 
 @Composable
 fun ItemCategoryScreen(
@@ -66,39 +64,27 @@ fun ItemCategoryEntry(
             .border(width = 1.dp, color = Color.White, StalcraftButton())
             .background(Color(55, 55, 64))
             .clickable {
-//                navController.navigate(
-//                    "item_category_screen/${entry.path}"
-//                )
+                if (entry.download_url == null) {
+                    navController.navigate("item_subcategory_screen")
+                } else {
+                    navController.navigate("item_detail_screen")
+                }
             }
     ) {
         Column {
-            when(entry.path.split("/")[2]) {
-                "medicine" -> {
-                    medicineInventory[entry.name]?.let {
-                        Text(
-                            text = it,
-                            color = Color.White
-                        )
-                    }
-                }
-                "bullet" -> {
-                    bulletInventory[entry.name]?.let {
-                        Text(
-                            text = it,
-                            color = Color.White
-                        )
-                    }
-                }
-                else -> {
-                    Text(
-                        text = entry.name,
-                        color = Color.White
-                    )
-                }
-            }
+            entry.itemName?.let {
+                Text(
+                    text = it,
+                    color = Color.White
+                )
+            } ?: Text(
+                text = entry.name,
+                color = Color.White
+            )
         }
     }
 }
+
 
 @Composable
 fun ItemCategoryList(
