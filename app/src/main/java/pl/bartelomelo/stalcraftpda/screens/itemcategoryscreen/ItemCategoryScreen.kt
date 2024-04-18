@@ -65,7 +65,7 @@ fun ItemCategoryEntry(
             .background(Color(55, 55, 64))
             .clickable {
                 if (entry.download_url == null) {
-                    navController.navigate("item_subcategory_screen")
+                    navController.navigate("item_subcategory_screen/${entry.path}")
                 } else {
                     navController.navigate("item_detail_screen")
                 }

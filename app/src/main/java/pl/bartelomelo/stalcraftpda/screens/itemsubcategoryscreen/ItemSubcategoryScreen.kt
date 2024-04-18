@@ -1,4 +1,4 @@
-package pl.bartelomelo.stalcraftpda.screens.itemlist
+package pl.bartelomelo.stalcraftpda.screens.itemsubcategoryscreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,8 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,18 +23,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import pl.bartelomelo.stalcraftpda.data.remote.responses.ItemList
 import pl.bartelomelo.stalcraftpda.data.remote.responses.ItemListItem
+import pl.bartelomelo.stalcraftpda.util.Resource
 import pl.bartelomelo.stalcraftpda.util.StalcraftButton
 
 @Composable
-fun ItemListScreen(
+fun ItemSubcategoryScreen(
     navController: NavController,
-    viewModel: ItemListViewModel = hiltViewModel()
+    route: List<String>
 ) {
     Surface(
         modifier = Modifier
             .fillMaxSize(),
-        color = Color(39, 39,47)
+        color = Color(39, 39, 47)
     ) {
         Box(
             modifier = Modifier
@@ -43,13 +44,13 @@ fun ItemListScreen(
             contentAlignment = Alignment.Center
 
         ) {
-            ItemList(navController = navController)
+            ItemSubcategoryList(navController = navController, route = route)
         }
     }
 }
 
 @Composable
-fun ItemEntry(
+fun ItemSubcategoryEntry(
     entry: ItemListItem,
     navController: NavController,
     modifier: Modifier = Modifier,
@@ -63,46 +64,56 @@ fun ItemEntry(
             .border(width = 1.dp, color = Color.White, StalcraftButton())
             .background(Color(55, 55, 64))
             .clickable {
-                navController.navigate(
-                    "item_category_screen/${entry.path}"
-                )
+
             }
     ) {
         Column {
-            val itemName = "${entry.name[0].uppercaseChar()}${entry.name.slice(1..< entry.name.length)}"
-            Text(
-                text = itemName,
+            entry.itemName?.let {
+                Text(
+                    text = it,
+                    color = Color.White
+                )
+            } ?: Text(
+                text = entry.name,
                 color = Color.White
             )
         }
     }
 }
 
-@Composable
-fun ItemList(
-    navController: NavController,
-    viewModel: ItemListViewModel = hiltViewModel()
-) {
-    val itemList by remember {
-        viewModel.itemList
-    }
 
-    LazyColumn(contentPadding = PaddingValues(15.dp)) {
-        items(itemList.size) {
-            ItemRow(rowIndex = it, entries = itemList, navController = navController)
+@Composable
+fun ItemSubcategoryList(
+    navController: NavController,
+    viewModel: ItemSubcategoryViewModel = hiltViewModel(),
+    route: List<String>
+) {
+    val itemList = produceState<Resource<ItemList>>(initialValue = Resource.Loading()) {
+        value = viewModel.getItemSubcategoryList(route[0], route[1])
+    }.value
+
+    if (itemList is Resource.Success) {
+        LazyColumn(contentPadding = PaddingValues(15.dp)) {
+            items(itemList.data!!.size) {
+                ItemSubcategoryRow(
+                    rowIndex = it,
+                    entries = itemList.data,
+                    navController = navController
+                )
+            }
         }
     }
 }
 
 @Composable
-fun ItemRow(
+fun ItemSubcategoryRow(
     rowIndex: Int,
     entries: List<ItemListItem>,
     navController: NavController
 ) {
     Column {
         Row {
-            ItemEntry(
+            ItemSubcategoryEntry(
                 entry = entries[rowIndex],
                 navController = navController,
                 modifier = Modifier.weight(1f)
