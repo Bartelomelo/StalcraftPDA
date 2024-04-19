@@ -1,6 +1,7 @@
 package pl.bartelomelo.stalcraftpda.util
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -45,142 +46,162 @@ fun PdaOverlay(phoneScreen: @Composable () -> Unit) {
             shape = RoundedCornerShape(15.dp),
             colors = CardDefaults.cardColors(Color(0xFFFFAA00))
         ) {
-            Card(
+            Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(5.dp),
-                shape = RoundedCornerShape(15.dp),
-                colors = CardDefaults.cardColors(Color.Black)
+                    .weight(100f)
             ) {
-                Row(
+                Card(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(40.dp),
-                    verticalAlignment = Alignment.Top,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        .fillMaxSize()
+                        .padding(start = 5.dp, top = 5.dp, end = 5.dp),
+                    shape = RoundedCornerShape(15.dp),
+                    colors = CardDefaults.cardColors(Color.Black)
                 ) {
-                    Box(
+                    Row(
                         modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .weight(1f)
+                            .fillMaxWidth()
+                            .height(40.dp),
+                        verticalAlignment = Alignment.Top,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.exbo_logo),
+                        Box(
                             modifier = Modifier
-                                .width(100.dp)
-                                .height(50.dp)
-                                .padding(top = 5.dp, start = 5.dp),
-                            contentDescription = "exbo logo"
-                        )
-                    }
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .weight(1f),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.front_camera),
-                            contentDescription = "front camera"
-                        )
-                    }
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .weight(1f)
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(40.dp),
-                            verticalAlignment = Alignment.Top,
-                            horizontalArrangement = Arrangement.SpaceBetween
+                                .align(Alignment.CenterVertically)
+                                .weight(1f)
                         ) {
-                            Box(
+                            Image(
+                                painter = painterResource(id = R.drawable.exbo_logo),
                                 modifier = Modifier
-                                    .fillMaxHeight()
-                                    .weight(1f),
-                                contentAlignment = Alignment.CenterEnd
+                                    .width(100.dp)
+                                    .height(50.dp)
+                                    .padding(top = 5.dp, start = 5.dp),
+                                contentDescription = "exbo logo"
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .weight(1f),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.front_camera),
+                                contentDescription = "front camera"
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .weight(1f)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(40.dp),
+                                verticalAlignment = Alignment.Top,
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Row(modifier = Modifier.padding(bottom = 10.dp, end = 4.dp)) {
-                                    Text(text = "")
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .weight(1f),
+                                    contentAlignment = Alignment.CenterEnd
+                                ) {
+                                    Row(modifier = Modifier.padding(bottom = 10.dp, end = 4.dp)) {
+                                        Text(text = "")
+                                        Image(
+                                            painter = painterResource(R.drawable.ic_launcher_background),
+                                            contentDescription = "",
+                                            colorFilter = ColorFilter.tint(Color.Green),
+                                            modifier = Modifier
+                                                .size(6.dp)
+                                                .clip(CircleShape)
+                                        )
+                                    }
                                     Image(
-                                        painter = painterResource(R.drawable.ic_launcher_background),
-                                        contentDescription = "",
-                                        colorFilter = ColorFilter.tint(Color.Green),
-                                        modifier = Modifier
-                                            .size(6.dp)
-                                            .clip(CircleShape)
+                                        painter = painterResource(id = R.drawable.radio_signal),
+                                        modifier = Modifier.size(15.dp),
+                                        contentDescription = "radio signal"
                                     )
                                 }
-                                Image(
-                                    painter = painterResource(id = R.drawable.radio_signal),
-                                    modifier = Modifier.size(15.dp),
-                                    contentDescription = "radio signal"
-                                )
-                            }
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                                    .align(Alignment.CenterVertically)
-                                    .weight(1f),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Row(modifier = Modifier.padding(bottom = 10.dp)) {
-                                    Text(text = "")
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .align(Alignment.CenterVertically)
+                                        .weight(1f),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Row(modifier = Modifier.padding(bottom = 10.dp)) {
+                                        Text(text = "")
+                                        Image(
+                                            painter = painterResource(R.drawable.ic_launcher_background),
+                                            contentDescription = "",
+                                            colorFilter = ColorFilter.tint(Color.Green),
+                                            modifier = Modifier
+                                                .size(6.dp)
+                                                .clip(CircleShape)
+                                        )
+                                    }
                                     Image(
-                                        painter = painterResource(R.drawable.ic_launcher_background),
-                                        contentDescription = "",
-                                        colorFilter = ColorFilter.tint(Color.Green),
-                                        modifier = Modifier
-                                            .size(6.dp)
-                                            .clip(CircleShape)
+                                        painter = painterResource(id = R.drawable.wifi_signal),
+                                        modifier = Modifier.size(15.dp),
+                                        contentDescription = "wifi signal"
                                     )
                                 }
-                                Image(
-                                    painter = painterResource(id = R.drawable.wifi_signal),
-                                    modifier = Modifier.size(15.dp),
-                                    contentDescription = "wifi signal"
-                                )
-                            }
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                                    .align(Alignment.CenterVertically)
-                                    .weight(1f),
-                                contentAlignment = Alignment.CenterStart
-                            ) {
-                                Row(modifier = Modifier.padding(start = 5.dp, bottom = 10.dp)) {
-                                    Text(text = "")
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .align(Alignment.CenterVertically)
+                                        .weight(1f),
+                                    contentAlignment = Alignment.CenterStart
+                                ) {
+                                    Row(modifier = Modifier.padding(start = 5.dp, bottom = 10.dp)) {
+                                        Text(text = "")
+                                        Image(
+                                            painter = painterResource(R.drawable.ic_launcher_background),
+                                            contentDescription = "",
+                                            colorFilter = ColorFilter.tint(Color.Green),
+                                            modifier = Modifier
+                                                .size(6.dp)
+                                                .clip(CircleShape)
+                                        )
+                                    }
                                     Image(
-                                        painter = painterResource(R.drawable.ic_launcher_background),
-                                        contentDescription = "",
-                                        colorFilter = ColorFilter.tint(Color.Green),
-                                        modifier = Modifier
-                                            .size(6.dp)
-                                            .clip(CircleShape)
+                                        painter = painterResource(id = R.drawable.battery),
+                                        modifier = Modifier.size(15.dp),
+                                        contentDescription = "battery condition"
                                     )
                                 }
-                                Image(
-                                    painter = painterResource(id = R.drawable.battery),
-                                    modifier = Modifier.size(15.dp),
-                                    contentDescription = "battery condition"
-                                )
                             }
                         }
                     }
+                    Card(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .fillMaxWidth()
+                            .padding(start = 5.dp, bottom = 5.dp, end = 5.dp),
+                        shape = RoundedCornerShape(5.dp),
+                        colors = CardDefaults.cardColors(Color.White)
+                    ) {
+                        phoneScreen()
+                    }
                 }
-                Card(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth()
-                        .padding(start = 5.dp, bottom = 5.dp, end = 5.dp),
-                    shape = RoundedCornerShape(5.dp),
-                    colors = CardDefaults.cardColors(Color.White)
-                ) {
-                    phoneScreen()
-                }
+            }
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.CenterStart
+            ) {
 
+                Box(
+                    modifier = Modifier
+                        .padding(start = 30.dp)
+                        .width(10.dp)
+                        .height(3.dp)
+                        .clip(RoundedCornerShape(5.dp))
+                        .background(Color.Black)
+                )
             }
         }
     }
