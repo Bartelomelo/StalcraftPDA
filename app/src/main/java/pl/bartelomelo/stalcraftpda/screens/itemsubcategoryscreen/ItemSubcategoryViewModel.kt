@@ -1,5 +1,6 @@
 package pl.bartelomelo.stalcraftpda.screens.itemsubcategoryscreen
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import pl.bartelomelo.stalcraftpda.data.remote.repositories.DbRepository
@@ -132,6 +133,7 @@ class ItemSubcategoryViewModel @Inject constructor(
         when (itemSubcategoryList) {
             is Resource.Success -> {
                 itemSubcategoryList.data?.let { sortCategories(it) }
+                Log.d("TEST", "SUKCES!!!!!")
                 return itemSubcategoryList
             }
             is Resource.Error -> {

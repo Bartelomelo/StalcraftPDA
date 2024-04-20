@@ -1,5 +1,6 @@
 package pl.bartelomelo.stalcraftpda.screens.itemsubcategoryscreen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -64,7 +65,8 @@ fun ItemSubcategoryEntry(
             .border(width = 1.dp, color = Color.White, StalcraftButton())
             .background(Color(55, 55, 64))
             .clickable {
-
+                Log.d("path", entry.path)
+                navController.navigate("item_detail_screen/${entry.path}")
             }
     ) {
         Column {

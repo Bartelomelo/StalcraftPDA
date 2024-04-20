@@ -67,7 +67,8 @@ fun ItemCategoryEntry(
                 if (entry.download_url == null) {
                     navController.navigate("item_subcategory_screen/${entry.path}")
                 } else {
-                    navController.navigate("item_detail_screen")
+                    val path = "${entry.path}/${entry.name}"
+                    navController.navigate("item_detail_screen/$path")
                 }
             }
     ) {
