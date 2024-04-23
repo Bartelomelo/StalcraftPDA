@@ -102,7 +102,7 @@ class MainActivity : ComponentActivity() {
                             }
 
                             PdaOverlay {
-                                ItemDetailScreen(navController = navController, route = route)
+                                ItemDetailScreen(route = route)
                             }
                         }
                     }
