@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,17 +50,16 @@ fun ItemDetailScreen(
 
         ) {
             if (item is Resource.Success) {
-//                val name = item.data?.name?.lines?.en
-//                val categoryName = item.data?.infoBlocks?.get(0)?.elements?.get(0)?.key?.lines?.en
-//                val itemName = item.data?.infoBlocks?.get(0)?.elements?.get(0)?.value
-//                val className = itemName.toString().split("=")[6].let {
-//                    it.substring(0, it.length - 2)
-//                }
-//                Text(text = "$categoryName: $className Name: $name")
-                Box() {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                ) {
                     ItemTopSection(item = item.data!!)
                 }
-                Box() {
+                Box(
+                    modifier = Modifier
+                        .weight(2f)
+                ) {
                     ItemInfoSection(item = item.data!!)
                 }
             }
@@ -72,11 +72,13 @@ fun ItemDetailScreen(
 fun ItemTopSection(
     item: ItemTest
 ) {
-    Column {
+    Column(
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp)
         ) {
             Box(
                 modifier = Modifier
@@ -124,37 +126,101 @@ fun ItemTopSection(
                 )
             }
         }
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(20.dp)
-                .background(Color.DarkGray)
-        )
     }
 }
 
 @Composable
 fun ItemInfoSection(item: ItemTest) {
+    Column {
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(5.dp)
+                .background(Color.DarkGray)
+        )
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
+            .padding(5.dp)
     ) {
         Box(
             modifier = Modifier
                 .weight(1f)
-                .fillMaxHeight()
-                .background(Color.Green)
+                .fillMaxHeight(),
+            contentAlignment = Alignment.TopStart
         ) {
+            LazyColumn() {
+                items(item.infoBlocks[0].elements.size) {
+                    when (item.infoBlocks[0].elements[it].type) {
+                        "key-value" -> {
+                            Text(
+                                modifier = Modifier.padding(start = 5.dp),
+                                text = item.infoBlocks[0].elements[it].key.lines.en,
+                                color = Color.White
+                            )
+                        }
 
+                        "numeric" -> {
+                            Text(
+                                modifier = Modifier.padding(start = 5.dp),
+                                text = item.infoBlocks[0].elements[it].name.lines.en,
+                                color = Color.White
+                            )
+                        }
+                    }
+                }
+            }
         }
         Box(
             modifier = Modifier
                 .weight(1f)
-                .fillMaxHeight()
-                .background(Color.Cyan)
+                .fillMaxHeight(),
+            contentAlignment = Alignment.TopEnd
         ) {
+            LazyColumn() {
+                items(item.infoBlocks[0].elements.size) {
+                    when (item.infoBlocks[0].elements[it].type) {
+                        "key-value" -> {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(end = 5.dp),
+                                contentAlignment = Alignment.CenterEnd
+                            ) {
+                                Text(
+                                    text = item.infoBlocks[0].elements[it].value.toString()
+                                        .split("=")[6].let { value ->
+                                        value.substring(0, value.length - 2)
+                                    },
+                                    color = Color.White
+                                )
+                            }
+                        }
 
+                        "numeric" -> {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(end = 5.dp),
+                                contentAlignment = Alignment.CenterEnd
+                            ) {
+                                Text(
+                                    text = item.infoBlocks[0].elements[it].formatted.value.en,
+                                    color = Color.White
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
+}
+
+
+@Composable
+fun ArmorInfoVariables(item: ItemTest) {
+
 }
