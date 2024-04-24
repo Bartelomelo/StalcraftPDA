@@ -42,29 +42,45 @@ fun ItemDetailScreen(
             .fillMaxSize(),
         color = Color(39, 39, 47)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-
-        ) {
-            if (item is Resource.Success) {
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                ) {
-                    ItemTopSection(item = item.data!!)
-                }
-                Box(
-                    modifier = Modifier
-                        .weight(2f)
-                ) {
-                    ItemInfoSection(item = item.data!!)
+        if (item is Resource.Success) {
+            when (item.data?.category!!.split("/")[0]) {
+                "armor" -> {
+                    ArmorScreen(item = item.data)
                 }
             }
-
         }
+    }
+}
+
+@Composable
+fun ArmorScreen(item: ItemTest) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+
+    ) {
+        Box(
+            modifier = Modifier
+                .weight(2f)
+        ) {
+            ItemTopSection(item = item)
+        }
+        Box(
+            modifier = Modifier
+                .weight(2f)
+        ) {
+            ItemInfoSection(item = item)
+        }
+        Box(
+            modifier = Modifier
+                .weight(3f)
+                .background(Color.Green)
+        ) {
+            Text(text = "ASDASD")
+        }
+
     }
 }
 
@@ -135,79 +151,36 @@ fun ItemInfoSection(item: ItemTest) {
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(5.dp)
+                .height(3.dp)
                 .background(Color.DarkGray)
         )
-    }
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(200.dp)
-            .padding(5.dp)
-    ) {
-        Box(
+        Row(
             modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
-            contentAlignment = Alignment.TopStart
+                .fillMaxWidth()
+                .padding(3.dp)
+                .weight(2f)
         ) {
-            LazyColumn() {
-                items(item.infoBlocks[0].elements.size) {
-                    when (item.infoBlocks[0].elements[it].type) {
-                        "key-value" -> {
-                            Text(
-                                modifier = Modifier.padding(start = 5.dp),
-                                text = item.infoBlocks[0].elements[it].key.lines.en,
-                                color = Color.White
-                            )
-                        }
-
-                        "numeric" -> {
-                            Text(
-                                modifier = Modifier.padding(start = 5.dp),
-                                text = item.infoBlocks[0].elements[it].name.lines.en,
-                                color = Color.White
-                            )
-                        }
-                    }
-                }
-            }
-        }
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
-            contentAlignment = Alignment.TopEnd
-        ) {
-            LazyColumn() {
-                items(item.infoBlocks[0].elements.size) {
-                    when (item.infoBlocks[0].elements[it].type) {
-                        "key-value" -> {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(end = 5.dp),
-                                contentAlignment = Alignment.CenterEnd
-                            ) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
+                contentAlignment = Alignment.TopStart
+            ) {
+                LazyColumn() {
+                    items(item.infoBlocks[0].elements.size) {
+                        when (item.infoBlocks[0].elements[it].type) {
+                            "key-value" -> {
                                 Text(
-                                    text = item.infoBlocks[0].elements[it].value.toString()
-                                        .split("=")[6].let { value ->
-                                        value.substring(0, value.length - 2)
-                                    },
+                                    modifier = Modifier.padding(start = 3.dp),
+                                    text = item.infoBlocks[0].elements[it].key.lines.en,
                                     color = Color.White
                                 )
                             }
-                        }
 
-                        "numeric" -> {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(end = 5.dp),
-                                contentAlignment = Alignment.CenterEnd
-                            ) {
+                            "numeric" -> {
                                 Text(
-                                    text = item.infoBlocks[0].elements[it].formatted.value.en,
+                                    modifier = Modifier.padding(start = 3.dp),
+                                    text = item.infoBlocks[0].elements[it].name.lines.en,
                                     color = Color.White
                                 )
                             }
@@ -215,12 +188,64 @@ fun ItemInfoSection(item: ItemTest) {
                     }
                 }
             }
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .background(Color.Red),
+                contentAlignment = Alignment.TopEnd
+            ) {
+                LazyColumn() {
+                    items(item.infoBlocks[0].elements.size) {
+                        when (item.infoBlocks[0].elements[it].type) {
+                            "key-value" -> {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(end = 5.dp),
+                                    contentAlignment = Alignment.CenterEnd
+                                ) {
+                                    Text(
+                                        text = item.infoBlocks[0].elements[it].value.toString()
+                                            .split("=")[6].let { value ->
+                                            value.substring(0, value.length - 2)
+                                        },
+                                        color = Color.White
+                                    )
+                                }
+                            }
+
+                            "numeric" -> {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(end = 5.dp),
+                                    contentAlignment = Alignment.CenterEnd
+                                ) {
+                                    Text(
+                                        text = item.infoBlocks[0].elements[it].formatted.value.en,
+                                        color = Color.White
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(Color.DarkGray)
+        )
+        Row(
+            modifier = Modifier
+                .weight(1.3f)
+                .fillMaxWidth()
+
+        ) {
+            Text(text = "ASDSAD")
         }
     }
-}
-
-
-@Composable
-fun ArmorInfoVariables(item: ItemTest) {
-
 }
