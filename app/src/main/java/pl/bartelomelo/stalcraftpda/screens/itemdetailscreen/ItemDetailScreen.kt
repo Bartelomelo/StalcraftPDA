@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import pl.bartelomelo.stalcraftpda.data.remote.responses.test.Element
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.ItemTest
 import pl.bartelomelo.stalcraftpda.util.Constants
 import pl.bartelomelo.stalcraftpda.util.Resource
@@ -47,9 +48,7 @@ fun ItemDetailScreen(
     ) {
         if (item is Resource.Success) {
             when (item.data?.category!!.split("/")[0]) {
-                "armor" -> {
-                    ArmorScreen(item = item.data)
-                }
+                "armor" -> ArmorScreen(item = item.data)
             }
         }
     }
@@ -90,18 +89,14 @@ fun ArmorScreen(item: ItemTest) {
                 .fillMaxSize()
         ) {
             Column {
+                val boxSize = item.infoBlocks[3].elements.size * 30
                 Box(
                     modifier = Modifier
-                        .height(200.dp)
+                        .height(boxSize.dp)
                         .fillMaxWidth()
-                        .background(Color.Cyan)
+                        .background(Color.Cyan),
                 ) {
-                    Text(
-                        "Scroll here 1",
-                        modifier = Modifier
-                            .background(Color.Red)
-                            .fillMaxWidth()
-                    )
+                    ArmorPropertiesSection(properties = item.infoBlocks[3].elements)
                 }
                 Box(
                     modifier = Modifier
@@ -297,6 +292,55 @@ fun ItemInfoSection(item: ItemTest) {
                                 }
                             }
                         }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ArmorPropertiesSection(properties: List<Element>) {
+    Column {
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(3.dp)
+                .background(Color.DarkGray)
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+
+        ) {
+            LazyColumn(userScrollEnabled = false) {
+                items(properties.size) {
+                    val backgroundColor = when {
+                        it % 2 == 0 -> Color(25, 25, 29)
+                        else -> Color(39, 39, 47)
+                    }
+                    Row (
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(30.dp)
+                            .background(backgroundColor)
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .weight(2f)
+                                .padding(start = 3.dp, end = 3.dp),
+                            text = properties[it].name.lines.en,
+                            color = Color.White
+                        )
+                        Text(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(start = 3.dp, end = 3.dp),
+                            text = properties[it].formatted.value.en,
+                            textAlign = TextAlign.End,
+                            color = Color.White
+                        )
                     }
                 }
             }
