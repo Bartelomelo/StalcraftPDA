@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +22,7 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -67,9 +70,15 @@ fun ArmorScreen(item: ItemTest) {
         ) {
             ItemTopSection(item = item)
         }
+        val itemInfoWeight = when (item.infoBlocks[2].elements.size) {
+            1 -> 1.5f
+            2 -> 1.5f
+            3 -> 2f
+            else -> 1.1f
+        }
         Box(
             modifier = Modifier
-                .weight(2f)
+                .weight(itemInfoWeight)
         ) {
             ItemInfoSection(item = item)
         }
@@ -77,10 +86,38 @@ fun ArmorScreen(item: ItemTest) {
             modifier = Modifier
                 .weight(3f)
                 .background(Color.Green)
+                .verticalScroll(rememberScrollState())
+                .fillMaxSize()
         ) {
-            Text(text = "ASDASD")
+            Column {
+                Box(
+                    modifier = Modifier
+                        .height(200.dp)
+                        .fillMaxWidth()
+                        .background(Color.Cyan)
+                ) {
+                    Text(
+                        "Scroll here 1",
+                        modifier = Modifier
+                            .background(Color.Red)
+                            .fillMaxWidth()
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .height(200.dp)
+                        .fillMaxWidth()
+                        .background(Color.Cyan)
+                ) {
+                    Text(
+                        "Scroll here 2",
+                        modifier = Modifier
+                            .background(Color.Magenta)
+                            .fillMaxWidth()
+                    )
+                }
+            }
         }
-
     }
 }
 
@@ -160,92 +197,109 @@ fun ItemInfoSection(item: ItemTest) {
                 .padding(3.dp)
                 .weight(2f)
         ) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                contentAlignment = Alignment.TopStart
-            ) {
-                LazyColumn() {
-                    items(item.infoBlocks[0].elements.size) {
+            LazyColumn() {
+                items(item.infoBlocks[0].elements.size) {
+                    Row(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth(),
+                    ) {
                         when (item.infoBlocks[0].elements[it].type) {
                             "key-value" -> {
                                 Text(
-                                    modifier = Modifier.padding(start = 3.dp),
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(start = 3.dp),
                                     text = item.infoBlocks[0].elements[it].key.lines.en,
                                     color = Color.White
                                 )
+                                Text(
+                                    modifier = Modifier
+                                        .padding(end = 3.dp)
+                                        .weight(1f),
+                                    text = item.infoBlocks[0].elements[it].value.toString()
+                                        .split("=")[6].let { value ->
+                                        value.substring(0, value.length - 2)
+                                    },
+                                    color = Color.White,
+                                    textAlign = TextAlign.End
+                                )
                             }
 
                             "numeric" -> {
                                 Text(
-                                    modifier = Modifier.padding(start = 3.dp),
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(start = 3.dp),
                                     text = item.infoBlocks[0].elements[it].name.lines.en,
                                     color = Color.White
                                 )
-                            }
-                        }
-                    }
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .background(Color.Red),
-                contentAlignment = Alignment.TopEnd
-            ) {
-                LazyColumn() {
-                    items(item.infoBlocks[0].elements.size) {
-                        when (item.infoBlocks[0].elements[it].type) {
-                            "key-value" -> {
-                                Box(
+                                Text(
                                     modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(end = 5.dp),
-                                    contentAlignment = Alignment.CenterEnd
-                                ) {
-                                    Text(
-                                        text = item.infoBlocks[0].elements[it].value.toString()
-                                            .split("=")[6].let { value ->
-                                            value.substring(0, value.length - 2)
-                                        },
-                                        color = Color.White
-                                    )
-                                }
-                            }
-
-                            "numeric" -> {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(end = 5.dp),
-                                    contentAlignment = Alignment.CenterEnd
-                                ) {
-                                    Text(
-                                        text = item.infoBlocks[0].elements[it].formatted.value.en,
-                                        color = Color.White
-                                    )
-                                }
+                                        .weight(1f)
+                                        .padding(end = 3.dp),
+                                    text = item.infoBlocks[0].elements[it].formatted.value.en,
+                                    color = Color.White,
+                                    textAlign = TextAlign.End
+                                )
                             }
                         }
                     }
                 }
             }
         }
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(Color.DarkGray)
-        )
-        Row(
-            modifier = Modifier
-                .weight(1.3f)
-                .fillMaxWidth()
+        if (item.infoBlocks[2].elements.isNotEmpty()) {
+            val rowWeight = when (item.infoBlocks[2].elements.size) {
+                1 -> 0.5f
+                2 -> 0.8f
+                3 -> 1f
+                else -> 1.2f
+            }
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(Color.DarkGray)
+            )
+            Row(
+                modifier = Modifier
+                    .weight(rowWeight)
+                    .fillMaxWidth()
+            ) {
+                LazyColumn() {
+                    items(item.infoBlocks[2].elements.size) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 3.dp, end = 3.dp)
+                        ) {
+                            when (item.infoBlocks[2].elements[it].type) {
+                                "numeric" -> {
+                                    Text(
+                                        modifier = Modifier
+                                            .weight(1f),
+                                        text = item.infoBlocks[2].elements[it].name.lines.en
+                                    )
+                                    Text(
+                                        modifier = Modifier
+                                            .weight(1f),
+                                        text = item.infoBlocks[2].elements[it].formatted.value.en,
+                                        textAlign = TextAlign.End
+                                    )
+                                }
 
-        ) {
-            Text(text = "ASDSAD")
+                                "text" -> {
+                                    Text(
+                                        modifier = Modifier
+                                            .weight(1f),
+                                        text = item.infoBlocks[2].elements[it].text.lines.en
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

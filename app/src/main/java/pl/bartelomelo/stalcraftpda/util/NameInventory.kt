@@ -407,7 +407,7 @@ val combinedInventory = mapOf(
     "dmg02.json" to "Worn Kleptomaniac",
     "g4yo5.json" to "Damaged SKAT-9m",
     "g4yo6.json" to "Worn Kingpin",
-    "j5ko0.json" to "Zarya Jumpsuit with Gas Mas",
+    "j5ko0.json" to "Zarya Jumpsuit with Gas Mask",
     "j5kv0.json" to "AH-2 Nomad Suit",
     "knqvy.json" to "Falcon Armored Suit",
     "lyjvk.json" to "AH-3 Seeker Suit",
