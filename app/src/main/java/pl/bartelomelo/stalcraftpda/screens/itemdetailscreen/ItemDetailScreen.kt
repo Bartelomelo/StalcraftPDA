@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,10 +25,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import pl.bartelomelo.stalcraftpda.data.remote.responses.test.Element
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.ItemTest
+import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.armordetailscreen.ArmorScreen
+import pl.bartelomelo.stalcraftpda.ui.theme.BackgroundColor
+import pl.bartelomelo.stalcraftpda.ui.theme.LettersGray
+import pl.bartelomelo.stalcraftpda.ui.theme.RankGreen
 import pl.bartelomelo.stalcraftpda.util.Constants
 import pl.bartelomelo.stalcraftpda.util.Resource
+import pl.bartelomelo.stalcraftpda.util.parseTypeToColor
 
 @Composable
 fun ItemDetailScreen(
@@ -44,7 +46,7 @@ fun ItemDetailScreen(
     Surface(
         modifier = Modifier
             .fillMaxSize(),
-        color = Color(39, 39, 47)
+        color = BackgroundColor
     ) {
         if (item is Resource.Success) {
             when (item.data?.category!!.split("/")[0]) {
@@ -54,67 +56,6 @@ fun ItemDetailScreen(
     }
 }
 
-@Composable
-fun ArmorScreen(item: ItemTest) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-
-    ) {
-        Box(
-            modifier = Modifier
-                .weight(2f)
-        ) {
-            ItemTopSection(item = item)
-        }
-        val itemInfoWeight = when (item.infoBlocks[2].elements.size) {
-            1 -> 1.5f
-            2 -> 1.5f
-            3 -> 2f
-            else -> 1.1f
-        }
-        Box(
-            modifier = Modifier
-                .weight(itemInfoWeight)
-        ) {
-            ItemInfoSection(item = item)
-        }
-        Box(
-            modifier = Modifier
-                .weight(3f)
-                .background(Color.Green)
-                .verticalScroll(rememberScrollState())
-                .fillMaxSize()
-        ) {
-            Column {
-                val boxSize = item.infoBlocks[3].elements.size * 30
-                Box(
-                    modifier = Modifier
-                        .height(boxSize.dp)
-                        .fillMaxWidth()
-                        .background(Color.Cyan),
-                ) {
-                    ArmorPropertiesSection(properties = item.infoBlocks[3].elements)
-                }
-                Box(
-                    modifier = Modifier
-                        .height(200.dp)
-                        .fillMaxWidth()
-                        .background(Color.Cyan)
-                ) {
-                    Text(
-                        "Scroll here 2",
-                        modifier = Modifier
-                            .background(Color.Magenta)
-                            .fillMaxWidth()
-                    )
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun ItemTopSection(
@@ -155,7 +96,7 @@ fun ItemTopSection(
                     Text(
                         text = itemName,
                         fontSize = 20.sp,
-                        color = Color.Red
+                        color = parseTypeToColor(item.color)
                     )
                 }
             }
@@ -192,7 +133,7 @@ fun ItemInfoSection(item: ItemTest) {
                 .padding(3.dp)
                 .weight(2f)
         ) {
-            LazyColumn() {
+            LazyColumn {
                 items(item.infoBlocks[0].elements.size) {
                     Row(
                         modifier = Modifier
@@ -206,8 +147,12 @@ fun ItemInfoSection(item: ItemTest) {
                                         .weight(1f)
                                         .padding(start = 3.dp),
                                     text = item.infoBlocks[0].elements[it].key.lines.en,
-                                    color = Color.White
+                                    color = LettersGray
                                 )
+                                val color = when (item.infoBlocks[0].elements[it].key.lines.en) {
+                                    "Rank" -> parseTypeToColor(item.color)
+                                    else -> parseTypeToColor("DEFAULT")
+                                }
                                 Text(
                                     modifier = Modifier
                                         .padding(end = 3.dp)
@@ -216,7 +161,7 @@ fun ItemInfoSection(item: ItemTest) {
                                         .split("=")[6].let { value ->
                                         value.substring(0, value.length - 2)
                                     },
-                                    color = Color.White,
+                                    color = color,
                                     textAlign = TextAlign.End
                                 )
                             }
@@ -227,14 +172,14 @@ fun ItemInfoSection(item: ItemTest) {
                                         .weight(1f)
                                         .padding(start = 3.dp),
                                     text = item.infoBlocks[0].elements[it].name.lines.en,
-                                    color = Color.White
+                                    color = LettersGray
                                 )
                                 Text(
                                     modifier = Modifier
                                         .weight(1f)
                                         .padding(end = 3.dp),
                                     text = item.infoBlocks[0].elements[it].formatted.value.en,
-                                    color = Color.White,
+                                    color = LettersGray,
                                     textAlign = TextAlign.End
                                 )
                             }
@@ -245,10 +190,11 @@ fun ItemInfoSection(item: ItemTest) {
         }
         if (item.infoBlocks[2].elements.isNotEmpty()) {
             val rowWeight = when (item.infoBlocks[2].elements.size) {
-                1 -> 0.5f
+                1 -> 0.4f
                 2 -> 0.8f
-                3 -> 1f
-                else -> 1.2f
+                3 -> 1.2f
+                4 -> 1.6f
+                else -> 1.8f
             }
             Spacer(
                 modifier = Modifier
@@ -261,7 +207,7 @@ fun ItemInfoSection(item: ItemTest) {
                     .weight(rowWeight)
                     .fillMaxWidth()
             ) {
-                LazyColumn() {
+                LazyColumn {
                     items(item.infoBlocks[2].elements.size) {
                         Row(
                             modifier = Modifier
@@ -270,16 +216,19 @@ fun ItemInfoSection(item: ItemTest) {
                         ) {
                             when (item.infoBlocks[2].elements[it].type) {
                                 "numeric" -> {
+                                    val color = android.graphics.Color.parseColor("#${item.infoBlocks[2].elements[it].formatted.nameColor}")
                                     Text(
                                         modifier = Modifier
                                             .weight(1f),
-                                        text = item.infoBlocks[2].elements[it].name.lines.en
+                                        text = item.infoBlocks[2].elements[it].name.lines.en,
+                                        color = Color(color)
                                     )
                                     Text(
                                         modifier = Modifier
                                             .weight(1f),
                                         text = item.infoBlocks[2].elements[it].formatted.value.en,
-                                        textAlign = TextAlign.End
+                                        textAlign = TextAlign.End,
+                                        color = Color(color)
                                     )
                                 }
 
@@ -287,7 +236,8 @@ fun ItemInfoSection(item: ItemTest) {
                                     Text(
                                         modifier = Modifier
                                             .weight(1f),
-                                        text = item.infoBlocks[2].elements[it].text.lines.en
+                                        text = item.infoBlocks[2].elements[it].text.lines.en,
+                                        color = RankGreen
                                     )
                                 }
                             }
@@ -299,51 +249,4 @@ fun ItemInfoSection(item: ItemTest) {
     }
 }
 
-@Composable
-fun ArmorPropertiesSection(properties: List<Element>) {
-    Column {
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(3.dp)
-                .background(Color.DarkGray)
-        )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
 
-        ) {
-            LazyColumn(userScrollEnabled = false) {
-                items(properties.size) {
-                    val backgroundColor = when {
-                        it % 2 == 0 -> Color(25, 25, 29)
-                        else -> Color(39, 39, 47)
-                    }
-                    Row (
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(30.dp)
-                            .background(backgroundColor)
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .weight(2f)
-                                .padding(start = 3.dp, end = 3.dp),
-                            text = properties[it].name.lines.en,
-                            color = Color.White
-                        )
-                        Text(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(start = 3.dp, end = 3.dp),
-                            text = properties[it].formatted.value.en,
-                            textAlign = TextAlign.End,
-                            color = Color.White
-                        )
-                    }
-                }
-            }
-        }
-    }
-}

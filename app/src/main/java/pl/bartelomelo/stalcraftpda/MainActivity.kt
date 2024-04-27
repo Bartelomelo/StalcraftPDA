@@ -1,10 +1,12 @@
 package pl.bartelomelo.stalcraftpda
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.Surface
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -100,7 +102,10 @@ class MainActivity : ComponentActivity() {
                                     it.arguments?.getString("itemId")!!
                                 )
                             }
-
+                            val width = LocalConfiguration.current.screenWidthDp.toString()
+                            val height = LocalConfiguration.current.screenHeightDp.toString()
+                            Log.d("width", width)
+                            Log.d("height", height)
                             PdaOverlay {
                                 ItemDetailScreen(route = route)
                             }

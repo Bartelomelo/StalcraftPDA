@@ -27,6 +27,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import pl.bartelomelo.stalcraftpda.R
+import pl.bartelomelo.stalcraftpda.ui.theme.Orange
 
 @Composable
 fun PdaOverlay(phoneScreen: @Composable () -> Unit) {
@@ -44,7 +45,7 @@ fun PdaOverlay(phoneScreen: @Composable () -> Unit) {
                 .fillMaxSize()
                 .padding(5.dp),
             shape = RoundedCornerShape(15.dp),
-            colors = CardDefaults.cardColors(Color(0xFFFFAA00))
+            colors = CardDefaults.cardColors(Orange)
         ) {
             Box(
                 modifier = Modifier
