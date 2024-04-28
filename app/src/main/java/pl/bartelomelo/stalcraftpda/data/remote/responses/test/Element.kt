@@ -6,5 +6,5 @@ data class Element(
     val name: Name,
     val type: String,
     val value: Any,
-    val text: Text
+    val text: Text,
 )

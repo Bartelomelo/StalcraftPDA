@@ -25,8 +25,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import pl.bartelomelo.stalcraftpda.data.remote.responses.test.InfoBlock
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.ItemTest
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.armordetailscreen.ArmorScreen
+import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.gundetailscreen.WeaponScreen
 import pl.bartelomelo.stalcraftpda.ui.theme.BackgroundColor
 import pl.bartelomelo.stalcraftpda.ui.theme.LettersGray
 import pl.bartelomelo.stalcraftpda.ui.theme.RankGreen
@@ -51,6 +53,7 @@ fun ItemDetailScreen(
         if (item is Resource.Success) {
             when (item.data?.category!!.split("/")[0]) {
                 "armor" -> ArmorScreen(item = item.data)
+                "weapon" -> WeaponScreen(item = item.data)
             }
         }
     }
@@ -248,5 +251,30 @@ fun ItemInfoSection(item: ItemTest) {
         }
     }
 }
+@Composable
+fun ItemDescriptionSection(properties: List<InfoBlock>, index: Int) {
+    Column {
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(3.dp)
+                .background(Color.DarkGray)
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            Text(
+                modifier = Modifier
+                    .padding(3.dp),
+                text = properties[index].text.lines.en,
+                textAlign = TextAlign.Start,
+                color = LettersGray
+            )
+        }
+    }
+}
+
 
 

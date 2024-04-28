@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.Element
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.InfoBlock
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.ItemTest
+import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.ItemDescriptionSection
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.ItemInfoSection
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.ItemTopSection
 import pl.bartelomelo.stalcraftpda.ui.theme.BackgroundColor
@@ -85,7 +86,7 @@ fun ArmorScreen(item: ItemTest) {
                         .height(115.dp)
                         .fillMaxWidth()
                 ) {
-                    ArmorDescriptionSection(properties = item.infoBlocks)
+                    ItemDescriptionSection(properties = item.infoBlocks, 6)
                 }
             }
         }
@@ -198,30 +199,5 @@ fun ArmorCompatibilitySection(properties: List<InfoBlock>) {
                 .height(1.dp)
                 .background(Color.DarkGray)
         )
-    }
-}
-
-@Composable
-fun ArmorDescriptionSection(properties: List<InfoBlock>) {
-    Column {
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(3.dp)
-                .background(Color.DarkGray)
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(),
-            contentAlignment = Alignment.CenterStart
-        ) {
-            Text(
-                modifier = Modifier
-                    .padding(3.dp),
-                text = properties[6].text.lines.en,
-                textAlign = TextAlign.Start,
-                color = LettersGray
-            )
-        }
     }
 }
