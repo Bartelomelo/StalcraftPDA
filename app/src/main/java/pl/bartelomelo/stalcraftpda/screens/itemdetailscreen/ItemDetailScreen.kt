@@ -28,7 +28,7 @@ import coil.compose.AsyncImage
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.InfoBlock
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.ItemTest
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.armordetailscreen.ArmorScreen
-import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.gundetailscreen.WeaponScreen
+import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.weapondetailscreen.WeaponScreen
 import pl.bartelomelo.stalcraftpda.ui.theme.BackgroundColor
 import pl.bartelomelo.stalcraftpda.ui.theme.LettersGray
 import pl.bartelomelo.stalcraftpda.ui.theme.RankGreen
@@ -193,7 +193,7 @@ fun ItemInfoSection(item: ItemTest) {
         }
         if (item.infoBlocks[2].elements.isNotEmpty()) {
             val rowWeight = when (item.infoBlocks[2].elements.size) {
-                1 -> 0.4f
+                1 -> 0.5f
                 2 -> 0.8f
                 3 -> 1.2f
                 4 -> 1.6f
@@ -219,7 +219,8 @@ fun ItemInfoSection(item: ItemTest) {
                         ) {
                             when (item.infoBlocks[2].elements[it].type) {
                                 "numeric" -> {
-                                    val color = android.graphics.Color.parseColor("#${item.infoBlocks[2].elements[it].formatted.nameColor}")
+                                    val color =
+                                        android.graphics.Color.parseColor("#${item.infoBlocks[2].elements[it].formatted.nameColor}")
                                     Text(
                                         modifier = Modifier
                                             .weight(1f),
@@ -249,8 +250,57 @@ fun ItemInfoSection(item: ItemTest) {
                 }
             }
         }
+        if (
+            item.infoBlocks[3].elements.isNotEmpty() &&
+            item.category.split("/")[1] == "melee" &&
+            item.infoBlocks[3].elements.first().name.key.split(".")[3] == "speed_modifier"
+            ) {
+            val rowWeight = when (item.infoBlocks[3].elements.size) {
+                1 -> 0.5f
+                2 -> 0.8f
+                else -> 1f
+            }
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(Color.DarkGray)
+            )
+            Row(
+                modifier = Modifier
+                    .weight(rowWeight)
+                    .fillMaxWidth()
+            ) {
+                LazyColumn {
+                    items(item.infoBlocks[3].elements.size) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 3.dp, end = 3.dp)
+                        ) {
+                            val color =
+                                android.graphics.Color.parseColor("#${item.infoBlocks[3].elements[it].formatted.nameColor}")
+                            Text(
+                                modifier = Modifier
+                                    .weight(1f),
+                                text = item.infoBlocks[3].elements[it].name.lines.en,
+                                color = Color(color)
+                            )
+                            Text(
+                                modifier = Modifier
+                                    .weight(1f),
+                                text = item.infoBlocks[3].elements[it].formatted.value.en,
+                                textAlign = TextAlign.End,
+                                color = Color(color)
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 }
+
 @Composable
 fun ItemDescriptionSection(properties: List<InfoBlock>, index: Int) {
     Column {

@@ -1,4 +1,4 @@
-package pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.gundetailscreen
+package pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.weapondetailscreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -46,9 +46,21 @@ fun WeaponScreen(item: ItemTest) {
         ) {
             ItemTopSection(item = item)
         }
+        var itemInfoWeight = 1f
+        if (item.category.split("/")[1] == "melee" && item.infoBlocks[3].elements.first().name.key.split(
+                "."
+            )[3] == "speed_modifier"
+        ) {
+            itemInfoWeight = when (item.infoBlocks[3].elements.size) {
+                0 -> 1f
+                1 -> 1.3f
+                2 -> 1.65f
+                else -> 2f
+            }
+        }
         Box(
             modifier = Modifier
-                .weight(1f)
+                .weight(itemInfoWeight)
         ) {
             when (item.category.split("/")[1]) {
                 "melee" -> ItemInfoSection(item = item)
@@ -67,28 +79,54 @@ fun WeaponScreen(item: ItemTest) {
                         .height(390.dp)
                         .fillMaxWidth(),
                 ) {
-                    WeaponPropertiesSection(properties = item.infoBlocks[2].elements)
+                    when (item.category.split("/")[1]) {
+                        "melee" -> {
+                            if (item.infoBlocks[3].elements.first().name.key.split(".")[3] == "speed_modifier") {
+                                WeaponPropertiesSection(properties = item.infoBlocks[4].elements)
+                            } else {
+                                WeaponPropertiesSection(properties = item.infoBlocks[3].elements)
+                            }
+                        }
+
+                        else -> WeaponPropertiesSection(properties = item.infoBlocks[2].elements)
+                    }
                 }
-                val boxHeight = when (item.infoBlocks[3].elements.size) {
-                    0 -> 80.dp
-                    1 -> 140.dp
-                    2 -> 170.dp
-                    3 -> 190.dp
-                    else -> 225.dp
+                var boxHeight = 80.dp
+                if (item.category.split("/")[1] != "melee") {
+                        boxHeight = when (item.infoBlocks[3].elements.size) {
+                        0 -> 80.dp
+                        1 -> 140.dp
+                        2 -> 170.dp
+                        3 -> 190.dp
+                        else -> 225.dp
+                    }
                 }
                 Box(
                     modifier = Modifier
                         .height(boxHeight)
                         .fillMaxWidth()
                 ) {
-                    WeaponModifierSection(properties = item.infoBlocks)
+                    when (item.category.split("/")[1]) {
+                        "melee" -> {
+                            if (item.infoBlocks[5].type == "list") {
+                                MeleeFeaturesSection(properties = item.infoBlocks[5])
+                            } else {
+                                MeleeFeaturesSection(properties = item.infoBlocks[4])
+                            }
+                        }
+
+                        else -> WeaponModifierSection(properties = item.infoBlocks)
+                    }
                 }
-                Box(
-                    modifier = Modifier
-                        .height(125.dp)
-                        .fillMaxWidth()
-                ) {
-                    Text(text = "Diagram")
+                if (item.category.split("/")[1] != "melee") {
+                    Box(
+                        modifier = Modifier
+                            .height(125.dp)
+                            .fillMaxWidth()
+                    ) {
+                        //WeaponDamageSection()
+                        Text(text = "Damage Chart")
+                    }
                 }
                 if (item.id != "y3jj0") {
                     Box(
@@ -101,7 +139,10 @@ fun WeaponScreen(item: ItemTest) {
                                 properties = item.infoBlocks,
                                 item.infoBlocks.lastIndex
                             )
-                            else -> ItemDescriptionSection(properties = item.infoBlocks, 7)
+                            else -> ItemDescriptionSection(
+                                properties = item.infoBlocks,
+                                item.infoBlocks.lastIndex
+                            )
                         }
                     }
                 }
@@ -209,7 +250,8 @@ fun WeaponPropertiesSection(properties: List<Element>) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(rowHeight.dp)
-                            .background(backgroundColor)
+                            .background(backgroundColor),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         when (properties[it].type) {
                             "key-value" -> {
@@ -345,4 +387,48 @@ fun WeaponModifierSection(properties: List<InfoBlock>) {
                 .background(Color.DarkGray)
         )
     }
+}
+
+@Composable
+fun MeleeFeaturesSection(properties: InfoBlock) {
+    Column {
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(Color.DarkGray)
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(start = 3.dp),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            Column {
+                Text(
+                    text = properties.title.lines.en,
+                    color = LettersGray
+                )
+                LazyColumn {
+                    items(properties.elements.size) {
+                        Text(
+                            text = properties.elements[it].text.lines.en,
+                            color = Color.White
+                        )
+                    }
+                }
+            }
+        }
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(Color.DarkGray)
+        )
+    }
+}
+
+@Composable
+fun WeaponDamageSection() {
 }

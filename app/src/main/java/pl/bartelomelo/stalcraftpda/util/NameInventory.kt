@@ -283,7 +283,7 @@ val sniperInventory = mapOf(
     "y32gk.json" to "Worn M40A5",
     "y32nk.json" to "WA2000",
     "zz23y.json" to "Worn Winchester M70",
-    "zz2ky.json" to "VSS-M \\\"Vintorez\\\"",
+    "zz2ky.json" to "VSS-M Vintorez",
     "zz2wy.json" to "M1A FA"
 )
 
