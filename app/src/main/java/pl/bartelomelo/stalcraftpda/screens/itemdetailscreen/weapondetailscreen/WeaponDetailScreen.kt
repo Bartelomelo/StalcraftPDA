@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,6 +21,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.github.tehras.charts.line.LineChart
+import com.github.tehras.charts.line.LineChartData
+import com.github.tehras.charts.line.renderer.line.SolidLineDrawer
+import com.github.tehras.charts.line.renderer.point.FilledCircularPointDrawer
+import com.github.tehras.charts.line.renderer.xaxis.SimpleXAxisDrawer
+import com.github.tehras.charts.line.renderer.yaxis.SimpleYAxisDrawer
+import com.github.tehras.charts.piechart.animation.simpleChartAnimation
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.Element
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.InfoBlock
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.ItemTest
@@ -46,13 +54,13 @@ fun WeaponScreen(item: ItemTest) {
         ) {
             ItemTopSection(item = item)
         }
-        var itemInfoWeight = 1f
+        var itemInfoWeight = 1.1f
         if (item.category.split("/")[1] == "melee" && item.infoBlocks[3].elements.first().name.key.split(
                 "."
             )[3] == "speed_modifier"
         ) {
             itemInfoWeight = when (item.infoBlocks[3].elements.size) {
-                0 -> 1f
+                0 -> 1.1f
                 1 -> 1.3f
                 2 -> 1.65f
                 else -> 2f
@@ -69,14 +77,15 @@ fun WeaponScreen(item: ItemTest) {
         }
         Box(
             modifier = Modifier
-                .weight(3.2f)
+                .weight(3f)
                 .verticalScroll(rememberScrollState())
                 .fillMaxSize()
         ) {
             Column {
+                val weaponPropertiesHeight = if (item.category.split("/")[1] == "melee") 255.dp else 390.dp
                 Box(
                     modifier = Modifier
-                        .height(390.dp)
+                        .height(weaponPropertiesHeight)
                         .fillMaxWidth(),
                 ) {
                     when (item.category.split("/")[1]) {
@@ -91,10 +100,10 @@ fun WeaponScreen(item: ItemTest) {
                         else -> WeaponPropertiesSection(properties = item.infoBlocks[2].elements)
                     }
                 }
-                var boxHeight = 80.dp
+                var boxHeight = 90.dp
                 if (item.category.split("/")[1] != "melee") {
                         boxHeight = when (item.infoBlocks[3].elements.size) {
-                        0 -> 80.dp
+                        0 -> 90.dp
                         1 -> 140.dp
                         2 -> 170.dp
                         3 -> 190.dp
@@ -121,11 +130,10 @@ fun WeaponScreen(item: ItemTest) {
                 if (item.category.split("/")[1] != "melee") {
                     Box(
                         modifier = Modifier
-                            .height(125.dp)
+                            .height(200.dp)
                             .fillMaxWidth()
                     ) {
-                        //WeaponDamageSection()
-                        Text(text = "Damage Chart")
+                        WeaponDamageSection(item.infoBlocks[6])
                     }
                 }
                 if (item.id != "y3jj0") {
@@ -245,11 +253,12 @@ fun WeaponPropertiesSection(properties: List<Element>) {
                         it % 2 == 0 -> BackgroundSecondary
                         else -> BackgroundColor
                     }
-                    val rowHeight = 360 / properties.size
+
+                    val rowHeight = if (properties.size < 10) 30.dp else (360 / properties.size).dp
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(rowHeight.dp)
+                            .height(rowHeight)
                             .background(backgroundColor),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -313,7 +322,7 @@ fun WeaponModifierSection(properties: List<InfoBlock>) {
             val boxWeight = when (properties[3].elements.size) {
                 1 -> 0.5f
                 2 -> 0.8f
-                3 -> 1f
+                3 -> 1.1f
                 else -> 1.1f
             }
             Box(
@@ -361,7 +370,7 @@ fun WeaponModifierSection(properties: List<InfoBlock>) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
+                .weight(1.2f)
                 .padding(start = 3.dp),
             contentAlignment = Alignment.CenterStart
         ) {
@@ -430,5 +439,95 @@ fun MeleeFeaturesSection(properties: InfoBlock) {
 }
 
 @Composable
-fun WeaponDamageSection() {
+fun WeaponDamageSection(properties: InfoBlock) {
+    val lineChartData = mutableListOf(
+        LineChartData(
+            points = listOf(
+                LineChartData.Point(properties.startDamage.toFloat(), "0m"),
+                LineChartData.Point(properties.startDamage.toFloat(), "${properties.damageDecreaseStart.split(".")[0]}m"),
+                LineChartData.Point(properties.endDamage.toFloat(), "${properties.damageDecreaseEnd.split(".")[0]}m"),
+                LineChartData.Point(properties.endDamage.toFloat(), "${properties.maxDistance.split(".")[0]}m")
+            ),
+            lineDrawer = SolidLineDrawer(
+                color = LettersGray
+            ),
+        )
+    )
+    Column {
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(Color.DarkGray)
+        )
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 3.dp, end = 3.dp, top = 3.dp)
+        ) {
+            Column {
+
+                Text(
+                    text = "Damage reduction at a distance",
+                    color = LettersGray
+                )
+                Row {
+                    Text(
+                        modifier = Modifier.weight(2f),
+                        text = "Up to ${properties.damageDecreaseStart.split(".")[0]} meters",
+                        color = LettersGray
+                    )
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = "${properties.startDamage}unit(s)",
+                        color = Color.White,
+                        textAlign = TextAlign.End
+                    )
+                }
+                Row {
+                    Text(
+                        modifier = Modifier.weight(2f),
+                        text = "From ${properties.damageDecreaseEnd.split(".")[0]} to ${properties.maxDistance.split(".")[0]} meters",
+                        color = LettersGray
+                    )
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = "${properties.endDamage}unit(s)",
+                        color = Color.White,
+                        textAlign = TextAlign.End
+                    )
+                }
+            }
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1.5f),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            LineChart(
+                linesChartData = lineChartData,
+                modifier = Modifier
+                    .fillMaxHeight(0.9f)
+                    .fillMaxWidth(0.95f),
+                animation = simpleChartAnimation(),
+                pointDrawer = FilledCircularPointDrawer(
+                    color = Color.White
+                ),
+                horizontalOffset = 0f,
+                yAxisDrawer = SimpleYAxisDrawer(
+                    labelRatio = 1,
+                    labelValueFormatter = { "" },
+                    axisLineColor = Color.DarkGray
+                ),
+                xAxisDrawer = SimpleXAxisDrawer(
+                    axisLineColor = Color.DarkGray,
+                    labelRatio = 1,
+                    labelTextColor = Color.DarkGray
+                )
+            )
+        }
+    }
 }
+
+

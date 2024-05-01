@@ -90,6 +90,13 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.49")
     kapt("com.google.dagger:hilt-android-compiler:2.49")
     implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
+
+    //chart
+
+    implementation ("com.github.jaikeerthick:Composable-Graphs:v1.2.3")
+    implementation ("com.github.tehras:charts:0.2.4-alpha")
+
+
 }
 // Allow references to generated code
 kapt {

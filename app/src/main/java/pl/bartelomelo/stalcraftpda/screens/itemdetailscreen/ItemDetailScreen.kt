@@ -134,7 +134,7 @@ fun ItemInfoSection(item: ItemTest) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(3.dp)
-                .weight(2f)
+                .weight(2.3f)
         ) {
             LazyColumn {
                 items(item.infoBlocks[0].elements.size) {
