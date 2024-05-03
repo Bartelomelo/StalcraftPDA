@@ -82,7 +82,8 @@ fun WeaponScreen(item: ItemTest) {
                 .fillMaxSize()
         ) {
             Column {
-                val weaponPropertiesHeight = if (item.category.split("/")[1] == "melee") 255.dp else 390.dp
+                val weaponPropertiesHeight =
+                    if (item.category.split("/")[1] == "melee") 255.dp else 390.dp
                 Box(
                     modifier = Modifier
                         .height(weaponPropertiesHeight)
@@ -102,7 +103,7 @@ fun WeaponScreen(item: ItemTest) {
                 }
                 var boxHeight = 90.dp
                 if (item.category.split("/")[1] != "melee") {
-                        boxHeight = when (item.infoBlocks[3].elements.size) {
+                    boxHeight = when (item.infoBlocks[3].elements.size) {
                         0 -> 90.dp
                         1 -> 140.dp
                         2 -> 170.dp
@@ -117,7 +118,9 @@ fun WeaponScreen(item: ItemTest) {
                 ) {
                     when (item.category.split("/")[1]) {
                         "melee" -> {
-                            if (item.infoBlocks[5].type == "list") {
+                            if (item.name.lines.en.lowercase().trim() == "razor") {
+                                MeleeFeaturesSection(properties = item.infoBlocks[4])
+                            } else if (item.infoBlocks[5].type == "list") {
                                 MeleeFeaturesSection(properties = item.infoBlocks[5])
                             } else {
                                 MeleeFeaturesSection(properties = item.infoBlocks[4])
@@ -147,6 +150,7 @@ fun WeaponScreen(item: ItemTest) {
                                 properties = item.infoBlocks,
                                 item.infoBlocks.lastIndex
                             )
+
                             else -> ItemDescriptionSection(
                                 properties = item.infoBlocks,
                                 item.infoBlocks.lastIndex
@@ -444,9 +448,18 @@ fun WeaponDamageSection(properties: InfoBlock) {
         LineChartData(
             points = listOf(
                 LineChartData.Point(properties.startDamage.toFloat(), "0m"),
-                LineChartData.Point(properties.startDamage.toFloat(), "${properties.damageDecreaseStart.split(".")[0]}m"),
-                LineChartData.Point(properties.endDamage.toFloat(), "${properties.damageDecreaseEnd.split(".")[0]}m"),
-                LineChartData.Point(properties.endDamage.toFloat(), "${properties.maxDistance.split(".")[0]}m")
+                LineChartData.Point(
+                    properties.startDamage.toFloat(),
+                    "${properties.damageDecreaseStart.split(".")[0]}m"
+                ),
+                LineChartData.Point(
+                    properties.endDamage.toFloat(),
+                    "${properties.damageDecreaseEnd.split(".")[0]}m"
+                ),
+                LineChartData.Point(
+                    properties.endDamage.toFloat(),
+                    "${properties.maxDistance.split(".")[0]}m"
+                )
             ),
             lineDrawer = SolidLineDrawer(
                 color = LettersGray
@@ -487,7 +500,11 @@ fun WeaponDamageSection(properties: InfoBlock) {
                 Row {
                     Text(
                         modifier = Modifier.weight(2f),
-                        text = "From ${properties.damageDecreaseEnd.split(".")[0]} to ${properties.maxDistance.split(".")[0]} meters",
+                        text = "From ${properties.damageDecreaseEnd.split(".")[0]} to ${
+                            properties.maxDistance.split(
+                                "."
+                            )[0]
+                        } meters",
                         color = LettersGray
                     )
                     Text(

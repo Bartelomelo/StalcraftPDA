@@ -28,6 +28,7 @@ import coil.compose.AsyncImage
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.InfoBlock
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.ItemTest
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.armordetailscreen.ArmorScreen
+import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.artefactdetailscreen.ArtefactScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.weapondetailscreen.WeaponScreen
 import pl.bartelomelo.stalcraftpda.ui.theme.BackgroundColor
 import pl.bartelomelo.stalcraftpda.ui.theme.LettersGray
@@ -54,6 +55,7 @@ fun ItemDetailScreen(
             when (item.data?.category!!.split("/")[0]) {
                 "armor" -> ArmorScreen(item = item.data)
                 "weapon" -> WeaponScreen(item = item.data)
+                "artefact" -> ArtefactScreen(item = item.data)
             }
         }
     }
@@ -147,8 +149,7 @@ fun ItemInfoSection(item: ItemTest) {
                             "key-value" -> {
                                 Text(
                                     modifier = Modifier
-                                        .weight(1f)
-                                        .padding(start = 3.dp),
+                                        .weight(1f),
                                     text = item.infoBlocks[0].elements[it].key.lines.en,
                                     color = LettersGray
                                 )
@@ -158,7 +159,6 @@ fun ItemInfoSection(item: ItemTest) {
                                 }
                                 Text(
                                     modifier = Modifier
-                                        .padding(end = 3.dp)
                                         .weight(1f),
                                     text = item.infoBlocks[0].elements[it].value.toString()
                                         .split("=")[6].let { value ->
@@ -172,15 +172,13 @@ fun ItemInfoSection(item: ItemTest) {
                             "numeric" -> {
                                 Text(
                                     modifier = Modifier
-                                        .weight(1f)
-                                        .padding(start = 3.dp),
+                                        .weight(1f),
                                     text = item.infoBlocks[0].elements[it].name.lines.en,
                                     color = LettersGray
                                 )
                                 Text(
                                     modifier = Modifier
-                                        .weight(1f)
-                                        .padding(end = 3.dp),
+                                        .weight(1f),
                                     text = item.infoBlocks[0].elements[it].formatted.value.en,
                                     color = LettersGray,
                                     textAlign = TextAlign.End
@@ -192,12 +190,15 @@ fun ItemInfoSection(item: ItemTest) {
             }
         }
         if (item.infoBlocks[2].elements.isNotEmpty()) {
-            val rowWeight = when (item.infoBlocks[2].elements.size) {
-                1 -> 0.5f
-                2 -> 0.8f
-                3 -> 1.2f
-                4 -> 1.6f
-                else -> 1.8f
+            var rowWeight = 0.9f
+            if (item.category.split("/")[0] != "artefact") {
+                rowWeight = when (item.infoBlocks[2].elements.size) {
+                    1 -> 0.6f
+                    2 -> 0.8f
+                    3 -> 1.2f
+                    4 -> 1.6f
+                    else -> 1.8f
+                }
             }
             Spacer(
                 modifier = Modifier
@@ -244,55 +245,71 @@ fun ItemInfoSection(item: ItemTest) {
                                         color = RankGreen
                                     )
                                 }
+
+                                else -> {
+                                    Text(
+                                        modifier = Modifier
+                                            .weight(2f),
+                                        text = item.infoBlocks[2].elements[0].key.lines.en,
+                                        color = Color.White
+                                    )
+                                    Text(
+                                        modifier = Modifier
+                                            .weight(1f),
+                                        text = "Not studied",
+                                        textAlign = TextAlign.End,
+                                        color = Color.White
+                                    )
+                                }
                             }
                         }
                     }
                 }
             }
-        }
-        if (
-            item.infoBlocks[3].elements.isNotEmpty() &&
-            item.category.split("/")[1] == "melee" &&
-            item.infoBlocks[3].elements.first().name.key.split(".")[3] == "speed_modifier"
+            if (
+                item.infoBlocks[3].elements.isNotEmpty() &&
+                item.category.split("/")[1] == "melee" &&
+                item.infoBlocks[3].elements.first().name.key.split(".")[3] == "speed_modifier"
             ) {
-            val rowWeight = when (item.infoBlocks[3].elements.size) {
-                1 -> 0.5f
-                2 -> 0.8f
-                else -> 1f
-            }
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(Color.DarkGray)
-            )
-            Row(
-                modifier = Modifier
-                    .weight(rowWeight)
-                    .fillMaxWidth()
-            ) {
-                LazyColumn {
-                    items(item.infoBlocks[3].elements.size) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 3.dp, end = 3.dp)
-                        ) {
-                            val color =
-                                android.graphics.Color.parseColor("#${item.infoBlocks[3].elements[it].formatted.nameColor}")
-                            Text(
+                val weight = when (item.infoBlocks[3].elements.size) {
+                    1 -> 0.5f
+                    2 -> 0.8f
+                    else -> 1f
+                }
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(Color.DarkGray)
+                )
+                Row(
+                    modifier = Modifier
+                        .weight(weight)
+                        .fillMaxWidth()
+                ) {
+                    LazyColumn {
+                        items(item.infoBlocks[3].elements.size) {
+                            Row(
                                 modifier = Modifier
-                                    .weight(1f),
-                                text = item.infoBlocks[3].elements[it].name.lines.en,
-                                color = Color(color)
-                            )
-                            Text(
-                                modifier = Modifier
-                                    .weight(1f),
-                                text = item.infoBlocks[3].elements[it].formatted.value.en,
-                                textAlign = TextAlign.End,
-                                color = Color(color)
-                            )
+                                    .fillMaxWidth()
+                                    .padding(start = 3.dp, end = 3.dp)
+                            ) {
+                                val color =
+                                    android.graphics.Color.parseColor("#${item.infoBlocks[3].elements[it].formatted.nameColor}")
+                                Text(
+                                    modifier = Modifier
+                                        .weight(1f),
+                                    text = item.infoBlocks[3].elements[it].name.lines.en,
+                                    color = Color(color)
+                                )
+                                Text(
+                                    modifier = Modifier
+                                        .weight(1f),
+                                    text = item.infoBlocks[3].elements[it].formatted.value.en,
+                                    textAlign = TextAlign.End,
+                                    color = Color(color)
+                                )
+                            }
                         }
                     }
                 }
@@ -315,13 +332,31 @@ fun ItemDescriptionSection(properties: List<InfoBlock>, index: Int) {
                 .fillMaxWidth(),
             contentAlignment = Alignment.CenterStart
         ) {
-            Text(
-                modifier = Modifier
-                    .padding(3.dp),
-                text = properties[index].text.lines.en,
-                textAlign = TextAlign.Start,
-                color = LettersGray
-            )
+            if (properties[index].type != "text") {
+                Text(
+                    modifier = Modifier
+                        .padding(3.dp),
+                    text = "There is nothing to say about this item.",
+                    textAlign = TextAlign.Start,
+                    color = LettersGray
+                )
+            } else if (properties[index].text.lines.en == "") {
+                Text(
+                    modifier = Modifier
+                        .padding(3.dp),
+                    text = "There is nothing to say about this item.",
+                    textAlign = TextAlign.Start,
+                    color = LettersGray
+                )
+            } else {
+                Text(
+                    modifier = Modifier
+                        .padding(3.dp),
+                    text = properties[index].text.lines.en,
+                    textAlign = TextAlign.Start,
+                    color = LettersGray
+                )
+            }
         }
     }
 }
