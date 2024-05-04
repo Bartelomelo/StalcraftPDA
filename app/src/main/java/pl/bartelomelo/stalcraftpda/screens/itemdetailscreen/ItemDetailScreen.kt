@@ -29,6 +29,7 @@ import pl.bartelomelo.stalcraftpda.data.remote.responses.test.InfoBlock
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.ItemTest
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.armordetailscreen.ArmorScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.artefactdetailscreen.ArtefactScreen
+import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.miscdetailscreen.MiscScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.weapondetailscreen.WeaponScreen
 import pl.bartelomelo.stalcraftpda.ui.theme.BackgroundColor
 import pl.bartelomelo.stalcraftpda.ui.theme.LettersGray
@@ -56,6 +57,7 @@ fun ItemDetailScreen(
                 "armor" -> ArmorScreen(item = item.data)
                 "weapon" -> WeaponScreen(item = item.data)
                 "artefact" -> ArtefactScreen(item = item.data)
+                "misc" -> MiscScreen(item = item.data)
             }
         }
     }
@@ -77,7 +79,7 @@ fun ItemTopSection(
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .weight(1f),
+                    .weight(1.5f),
                 contentAlignment = Alignment.TopStart
             ) {
                 val className = item.infoBlocks[0].elements[0].value.toString().split("=")[6].let {
@@ -95,7 +97,7 @@ fun ItemTopSection(
                     Spacer(
                         modifier = Modifier
                             .height(1.dp)
-                            .fillMaxWidth(0.9f)
+                            .fillMaxWidth(0.95f)
                             .background(Color.White)
                     )
                     Text(
