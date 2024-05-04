@@ -25,13 +25,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import pl.bartelomelo.stalcraftpda.data.remote.responses.test.Element
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.InfoBlock
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.ItemTest
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.armordetailscreen.ArmorScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.artefactdetailscreen.ArtefactScreen
+import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.medicinedetailscreen.MedicineScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.miscdetailscreen.MiscScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.weapondetailscreen.WeaponScreen
 import pl.bartelomelo.stalcraftpda.ui.theme.BackgroundColor
+import pl.bartelomelo.stalcraftpda.ui.theme.BackgroundSecondary
 import pl.bartelomelo.stalcraftpda.ui.theme.LettersGray
 import pl.bartelomelo.stalcraftpda.ui.theme.RankGreen
 import pl.bartelomelo.stalcraftpda.util.Constants
@@ -58,6 +61,7 @@ fun ItemDetailScreen(
                 "weapon" -> WeaponScreen(item = item.data)
                 "artefact" -> ArtefactScreen(item = item.data)
                 "misc" -> MiscScreen(item = item.data)
+                "medicine" -> MedicineScreen(item = item.data)
             }
         }
     }
@@ -134,11 +138,13 @@ fun ItemInfoSection(item: ItemTest) {
                 .height(3.dp)
                 .background(Color.DarkGray)
         )
+        val infoWeight = if (item.category == "medicine") 0.3f else 2.3f
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(3.dp)
-                .weight(2.3f)
+                .padding(start = 3.dp, end = 3.dp)
+                .weight(infoWeight),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             LazyColumn {
                 items(item.infoBlocks[0].elements.size) {
@@ -194,13 +200,26 @@ fun ItemInfoSection(item: ItemTest) {
         if (item.infoBlocks[2].elements.isNotEmpty()) {
             var rowWeight = 0.9f
             if (item.category.split("/")[0] != "artefact") {
-                rowWeight = when (item.infoBlocks[2].elements.size) {
-                    1 -> 0.6f
-                    2 -> 0.8f
-                    3 -> 1.2f
-                    4 -> 1.6f
-                    else -> 1.8f
+                if (item.category != "medicine") {
+                    rowWeight = when (item.infoBlocks[2].elements.size) {
+                        1 -> 0.6f
+                        2 -> 1f
+                        3 -> 1.4f
+                        4 -> 1.8f
+                        6 -> 2.75f
+                        else -> 2.3f
+                    }
+                } else {
+                    rowWeight = when (item.infoBlocks[2].elements.size) {
+                        1 -> 0.2f
+                        2 -> 0.3f
+                        3 -> 0.5f
+                        4 -> 0.6f
+                        6 -> 2.75f
+                        else -> 2.3f
+                    }
                 }
+
             }
             Spacer(
                 modifier = Modifier
@@ -211,7 +230,8 @@ fun ItemInfoSection(item: ItemTest) {
             Row(
                 modifier = Modifier
                     .weight(rowWeight)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 LazyColumn {
                     items(item.infoBlocks[2].elements.size) {
@@ -226,13 +246,13 @@ fun ItemInfoSection(item: ItemTest) {
                                         android.graphics.Color.parseColor("#${item.infoBlocks[2].elements[it].formatted.nameColor}")
                                     Text(
                                         modifier = Modifier
-                                            .weight(1f),
+                                            .weight(1.75f),
                                         text = item.infoBlocks[2].elements[it].name.lines.en,
                                         color = Color(color)
                                     )
                                     Text(
                                         modifier = Modifier
-                                            .weight(1f),
+                                            .weight(2f),
                                         text = item.infoBlocks[2].elements[it].formatted.value.en,
                                         textAlign = TextAlign.End,
                                         color = Color(color)
@@ -249,18 +269,23 @@ fun ItemInfoSection(item: ItemTest) {
                                 }
 
                                 else -> {
-                                    Text(
-                                        modifier = Modifier
-                                            .weight(2f),
-                                        text = item.infoBlocks[2].elements[0].key.lines.en,
-                                        color = Color.White
-                                    )
+                                    val color =
+                                        if (item.category == "medicine") LettersGray else Color.White
                                     Text(
                                         modifier = Modifier
                                             .weight(1f),
-                                        text = "Not studied",
+                                        text = item.infoBlocks[2].elements[0].key.lines.en,
+                                        color = color
+                                    )
+                                    Text(
+                                        modifier = Modifier
+                                            .weight(2f),
+                                        text = item.infoBlocks[2].elements[0].value.toString()
+                                            .split("=")[6].let { value ->
+                                            value.substring(0, value.length - 2)
+                                        },
                                         textAlign = TextAlign.End,
-                                        color = Color.White
+                                        color = color
                                     )
                                 }
                             }
@@ -270,7 +295,7 @@ fun ItemInfoSection(item: ItemTest) {
             }
             if (
                 item.infoBlocks[3].elements.isNotEmpty() &&
-                item.category.split("/")[1] == "melee" &&
+                item.category.split("/").let { it[it.lastIndex] } == "melee" &&
                 item.infoBlocks[3].elements.first().name.key.split(".")[3] == "speed_modifier"
             ) {
                 val weight = when (item.infoBlocks[3].elements.size) {
@@ -308,6 +333,84 @@ fun ItemInfoSection(item: ItemTest) {
                                     modifier = Modifier
                                         .weight(1f),
                                     text = item.infoBlocks[3].elements[it].formatted.value.en,
+                                    textAlign = TextAlign.End,
+                                    color = Color(color)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ItemPropertiesSection(properties: List<Element>) {
+    Column {
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(3.dp)
+                .background(Color.DarkGray)
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            LazyColumn(userScrollEnabled = false) {
+                items(properties.size) {
+                    val backgroundColor = when {
+                        it % 2 == 0 -> BackgroundSecondary
+                        else -> BackgroundColor
+                    }
+                    val rowHeight =
+                        if (properties.size < 10) 30.dp else (360 / properties.size).dp
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(rowHeight)
+                            .background(backgroundColor),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        when (properties[it].type) {
+                            "key-value" -> {
+                                Text(
+                                    modifier = Modifier
+                                        .weight(2f)
+                                        .padding(start = 3.dp, end = 3.dp),
+                                    text = properties[it].key.lines.en,
+                                    color = LettersGray
+                                )
+                                Text(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(start = 3.dp, end = 3.dp),
+                                    text = properties[it].value.toString()
+                                        .split("=")[6].let { value ->
+                                        value.substring(0, value.length - 2)
+                                    },
+                                    textAlign = TextAlign.End,
+                                    color = LettersGray
+                                )
+                            }
+
+                            "numeric" -> {
+                                val color =
+                                    android.graphics.Color.parseColor("#${properties[it].formatted.nameColor}")
+                                Text(
+                                    modifier = Modifier
+                                        .weight(2f)
+                                        .padding(start = 3.dp, end = 3.dp),
+                                    text = properties[it].name.lines.en,
+                                    color = LettersGray
+                                )
+                                Text(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(start = 3.dp, end = 3.dp),
+                                    text = properties[it].formatted.value.en,
                                     textAlign = TextAlign.End,
                                     color = Color(color)
                                 )
@@ -362,6 +465,7 @@ fun ItemDescriptionSection(properties: List<InfoBlock>, index: Int) {
         }
     }
 }
+
 
 
 

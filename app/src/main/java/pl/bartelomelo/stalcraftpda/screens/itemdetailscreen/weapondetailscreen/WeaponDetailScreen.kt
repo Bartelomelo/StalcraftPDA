@@ -28,14 +28,12 @@ import com.github.tehras.charts.line.renderer.point.FilledCircularPointDrawer
 import com.github.tehras.charts.line.renderer.xaxis.SimpleXAxisDrawer
 import com.github.tehras.charts.line.renderer.yaxis.SimpleYAxisDrawer
 import com.github.tehras.charts.piechart.animation.simpleChartAnimation
-import pl.bartelomelo.stalcraftpda.data.remote.responses.test.Element
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.InfoBlock
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.ItemTest
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.ItemDescriptionSection
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.ItemInfoSection
+import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.ItemPropertiesSection
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.ItemTopSection
-import pl.bartelomelo.stalcraftpda.ui.theme.BackgroundColor
-import pl.bartelomelo.stalcraftpda.ui.theme.BackgroundSecondary
 import pl.bartelomelo.stalcraftpda.ui.theme.LettersGray
 import pl.bartelomelo.stalcraftpda.util.parseTypeToColor
 
@@ -54,7 +52,7 @@ fun WeaponScreen(item: ItemTest) {
         ) {
             ItemTopSection(item = item)
         }
-        var itemInfoWeight = 1.1f
+        var itemInfoWeight = 1f
         if (item.category.split("/")[1] == "melee" && item.infoBlocks[3].elements.first().name.key.split(
                 "."
             )[3] == "speed_modifier"
@@ -92,13 +90,13 @@ fun WeaponScreen(item: ItemTest) {
                     when (item.category.split("/")[1]) {
                         "melee" -> {
                             if (item.infoBlocks[3].elements.first().name.key.split(".")[3] == "speed_modifier") {
-                                WeaponPropertiesSection(properties = item.infoBlocks[4].elements)
+                                ItemPropertiesSection(properties = item.infoBlocks[4].elements)
                             } else {
-                                WeaponPropertiesSection(properties = item.infoBlocks[3].elements)
+                                ItemPropertiesSection(properties = item.infoBlocks[3].elements)
                             }
                         }
 
-                        else -> WeaponPropertiesSection(properties = item.infoBlocks[2].elements)
+                        else -> ItemPropertiesSection(properties = item.infoBlocks[2].elements)
                     }
                 }
                 var boxHeight = 90.dp
@@ -227,82 +225,6 @@ fun WeaponInfoSection(item: ItemTest) {
                                     text = item.infoBlocks[0].elements[it].formatted.value.en,
                                     color = LettersGray,
                                     textAlign = TextAlign.End
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun WeaponPropertiesSection(properties: List<Element>) {
-    Column {
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(3.dp)
-                .background(Color.DarkGray)
-        )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            LazyColumn(userScrollEnabled = false) {
-                items(properties.size) {
-                    val backgroundColor = when {
-                        it % 2 == 0 -> BackgroundSecondary
-                        else -> BackgroundColor
-                    }
-
-                    val rowHeight = if (properties.size < 10) 30.dp else (360 / properties.size).dp
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(rowHeight)
-                            .background(backgroundColor),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        when (properties[it].type) {
-                            "key-value" -> {
-                                Text(
-                                    modifier = Modifier
-                                        .weight(2f)
-                                        .padding(start = 3.dp, end = 3.dp),
-                                    text = properties[it].key.lines.en,
-                                    color = LettersGray
-                                )
-                                Text(
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .padding(start = 3.dp, end = 3.dp),
-                                    text = properties[it].value.toString()
-                                        .split("=")[6].let { value ->
-                                        value.substring(0, value.length - 2)
-                                    },
-                                    textAlign = TextAlign.End,
-                                    color = Color.White
-                                )
-                            }
-
-                            "numeric" -> {
-                                Text(
-                                    modifier = Modifier
-                                        .weight(2f)
-                                        .padding(start = 3.dp, end = 3.dp),
-                                    text = properties[it].name.lines.en,
-                                    color = LettersGray
-                                )
-                                Text(
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .padding(start = 3.dp, end = 3.dp),
-                                    text = properties[it].formatted.value.en,
-                                    textAlign = TextAlign.End,
-                                    color = Color.White
                                 )
                             }
                         }
