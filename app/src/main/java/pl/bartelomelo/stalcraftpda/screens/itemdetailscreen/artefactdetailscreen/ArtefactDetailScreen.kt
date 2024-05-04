@@ -54,6 +54,9 @@ fun ArtefactScreen(item: ItemTest) {
         }
         val boxWeight = when (item.infoBlocks[4].elements.size) {
             3 -> 0.9f
+            4 -> 1.2f
+            6 -> 1.9f
+            8 -> 2.1f
             else -> 1.2f
         }
         Box(
@@ -62,9 +65,14 @@ fun ArtefactScreen(item: ItemTest) {
         ) {
             ArtefactPropertiesSection(properties = item.infoBlocks[4])
         }
+        val infoWeight = when (item.infoBlocks[4].elements.size) {
+            6 -> 2.5f
+            8 -> 1.3f
+            else -> 3f
+        }
         Box(
             modifier = Modifier
-                .weight(2.5f)
+                .weight(infoWeight)
         ){
             ItemDescriptionSection(properties = item.infoBlocks, index = item.infoBlocks.lastIndex)
         }
@@ -155,7 +163,7 @@ fun ArtefactPropertiesSection(properties: InfoBlock) {
                 ) {
                     Text(
                         modifier = Modifier
-                            .weight(1f),
+                            .weight(1.5f),
                         text = properties.elements[it].name.lines.en,
                         color = LettersGray
                     )
