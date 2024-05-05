@@ -30,6 +30,7 @@ import pl.bartelomelo.stalcraftpda.data.remote.responses.test.InfoBlock
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.ItemTest
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.armordetailscreen.ArmorScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.artefactdetailscreen.ArtefactScreen
+import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.grenadedetailscreen.GrenadeScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.medicinedetailscreen.MedicineScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.miscdetailscreen.MiscScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.weapondetailscreen.WeaponScreen
@@ -62,6 +63,7 @@ fun ItemDetailScreen(
                 "artefact" -> ArtefactScreen(item = item.data)
                 "misc" -> MiscScreen(item = item.data)
                 "medicine" -> MedicineScreen(item = item.data)
+                "grenade" -> GrenadeScreen(item = item.data)
             }
         }
     }
@@ -138,7 +140,10 @@ fun ItemInfoSection(item: ItemTest) {
                 .height(3.dp)
                 .background(Color.DarkGray)
         )
-        val infoWeight = if (item.category == "medicine") 0.3f else 2.3f
+        val infoWeight = when (item.category) {
+            "medicine", "grenade" -> 0.3f
+            else -> 2.3f
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -294,8 +299,8 @@ fun ItemInfoSection(item: ItemTest) {
                 }
             }
             if (
-                item.infoBlocks[3].elements.isNotEmpty() &&
                 item.category.split("/").let { it[it.lastIndex] } == "melee" &&
+                item.infoBlocks[3].elements.isNotEmpty() &&
                 item.infoBlocks[3].elements.first().name.key.split(".")[3] == "speed_modifier"
             ) {
                 val weight = when (item.infoBlocks[3].elements.size) {
