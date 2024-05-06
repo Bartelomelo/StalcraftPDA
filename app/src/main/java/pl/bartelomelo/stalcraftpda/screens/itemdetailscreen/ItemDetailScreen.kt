@@ -30,6 +30,7 @@ import pl.bartelomelo.stalcraftpda.data.remote.responses.test.InfoBlock
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.ItemTest
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.armordetailscreen.ArmorScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.artefactdetailscreen.ArtefactScreen
+import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.bulletdetailscreen.BulletScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.containerdetailscreen.ContainerScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.grenadedetailscreen.GrenadeScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.medicinedetailscreen.MedicineScreen
@@ -66,6 +67,7 @@ fun ItemDetailScreen(
                 "medicine" -> MedicineScreen(item = item.data)
                 "grenade" -> GrenadeScreen(item = item.data)
                 "containers", "backpack" -> ContainerScreen(item = item.data)
+                "bullet" -> BulletScreen(item = item.data)
             }
         }
     }
@@ -144,6 +146,7 @@ fun ItemInfoSection(item: ItemTest) {
         )
         val infoWeight = when (item.category) {
             "medicine", "grenade" -> 0.3f
+            "bullet" -> 0.7f
             else -> 2.3f
         }
         Row(
@@ -263,16 +266,16 @@ fun ItemInfoSection(item: ItemTest) {
                                         color = Color(color)
                                     )
                                 }
-
                                 "text" -> {
+                                    val color =
+                                        if (item.category == "bullet") LettersGray else RankGreen
                                     Text(
                                         modifier = Modifier
                                             .weight(1f),
                                         text = item.infoBlocks[2].elements[it].text.lines.en,
-                                        color = RankGreen
+                                        color = color
                                     )
                                 }
-
                                 else -> {
                                     val color =
                                         if (item.category == "medicine") LettersGray else Color.White
