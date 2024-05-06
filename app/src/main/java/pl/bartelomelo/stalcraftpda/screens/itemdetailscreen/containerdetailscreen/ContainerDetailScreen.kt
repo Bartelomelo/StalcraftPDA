@@ -25,7 +25,14 @@ fun ContainerScreen(item: ItemTest) {
         ) {
             ItemTopSection(item = item)
         }
-        val infoWeight = if (item.infoBlocks[2].type == "text") 0.7f else 0.55f
+        val infoWeight = if (item.infoBlocks[2].type == "text") {
+            when (item.category == "backpack") {
+                true -> 0.45f
+                else -> 0.7f
+            }
+        } else {
+            0.55f
+        }
         Box(
             modifier = Modifier
                 .weight(infoWeight)
@@ -43,14 +50,16 @@ fun ContainerScreen(item: ItemTest) {
                 else -> 0.7f
             }
         }
-        Box(
-            modifier = Modifier
-                .weight(propertiesWeight)
-        ) {
-            if (item.infoBlocks[2].type == "text") {
-                ItemPropertiesSection(properties = item.infoBlocks[3].elements)
-            } else {
-                ItemPropertiesSection(properties = item.infoBlocks[2].elements)
+        if (item.category != "backpack") {
+            Box(
+                modifier = Modifier
+                    .weight(propertiesWeight)
+            ) {
+                if (item.infoBlocks[2].type == "text") {
+                    ItemPropertiesSection(properties = item.infoBlocks[3].elements)
+                } else {
+                    ItemPropertiesSection(properties = item.infoBlocks[2].elements)
+                }
             }
         }
         Box(

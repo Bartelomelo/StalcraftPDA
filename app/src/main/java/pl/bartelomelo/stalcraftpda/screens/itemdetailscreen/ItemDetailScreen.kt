@@ -65,7 +65,7 @@ fun ItemDetailScreen(
                 "misc" -> MiscScreen(item = item.data)
                 "medicine" -> MedicineScreen(item = item.data)
                 "grenade" -> GrenadeScreen(item = item.data)
-                "containers" -> ContainerScreen(item = item.data)
+                "containers", "backpack" -> ContainerScreen(item = item.data)
             }
         }
     }
