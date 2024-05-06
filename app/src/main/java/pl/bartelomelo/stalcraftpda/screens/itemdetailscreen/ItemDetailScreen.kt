@@ -30,6 +30,7 @@ import pl.bartelomelo.stalcraftpda.data.remote.responses.test.InfoBlock
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.ItemTest
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.armordetailscreen.ArmorScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.artefactdetailscreen.ArtefactScreen
+import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.containerdetailscreen.ContainerScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.grenadedetailscreen.GrenadeScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.medicinedetailscreen.MedicineScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.miscdetailscreen.MiscScreen
@@ -64,6 +65,7 @@ fun ItemDetailScreen(
                 "misc" -> MiscScreen(item = item.data)
                 "medicine" -> MedicineScreen(item = item.data)
                 "grenade" -> GrenadeScreen(item = item.data)
+                "containers" -> ContainerScreen(item = item.data)
             }
         }
     }
@@ -172,7 +174,7 @@ fun ItemInfoSection(item: ItemTest) {
                                 }
                                 Text(
                                     modifier = Modifier
-                                        .weight(1f),
+                                        .weight(2f),
                                     text = item.infoBlocks[0].elements[it].value.toString()
                                         .split("=")[6].let { value ->
                                         value.substring(0, value.length - 2)
@@ -181,7 +183,6 @@ fun ItemInfoSection(item: ItemTest) {
                                     textAlign = TextAlign.End
                                 )
                             }
-
                             "numeric" -> {
                                 Text(
                                     modifier = Modifier
@@ -202,8 +203,8 @@ fun ItemInfoSection(item: ItemTest) {
                 }
             }
         }
-        if (item.infoBlocks[2].elements.isNotEmpty()) {
-            var rowWeight = 0.9f
+        var rowWeight = 0.9f
+        if (item.infoBlocks[2].type == "list" && item.infoBlocks[2].elements.isNotEmpty()  && item.category != "containers") {
             if (item.category.split("/")[0] != "artefact") {
                 if (item.category != "medicine") {
                     rowWeight = when (item.infoBlocks[2].elements.size) {
@@ -224,7 +225,6 @@ fun ItemInfoSection(item: ItemTest) {
                         else -> 2.3f
                     }
                 }
-
             }
             Spacer(
                 modifier = Modifier
@@ -345,6 +345,26 @@ fun ItemInfoSection(item: ItemTest) {
                         }
                     }
                 }
+            }
+        } else if (item.infoBlocks[2].type == "text") {
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(Color.DarkGray)
+            )
+            Row(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    modifier = Modifier
+                        .padding(start = 3.dp),
+                    text = item.infoBlocks[2].text.lines.en,
+                    color = Color.White
+                )
             }
         }
     }

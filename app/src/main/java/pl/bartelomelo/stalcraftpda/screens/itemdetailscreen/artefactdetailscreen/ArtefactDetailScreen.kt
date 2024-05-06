@@ -42,13 +42,16 @@ fun ArtefactScreen(item: ItemTest) {
         Box(
             modifier = Modifier
                 .weight(0.9f)
+                .background(Color.Cyan)
         ) {
+            ItemInfoSection(item = item)
             ItemInfoSection(item = item)
         }
         Box(
             modifier = Modifier
                 .weight(0.8f)
                 .fillMaxWidth()
+                .background(Color.Green)
         ) {
             ArtefactInfoSection(properties = item)
         }
