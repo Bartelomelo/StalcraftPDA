@@ -9,15 +9,21 @@ import pl.bartelomelo.stalcraftpda.data.remote.responses.ItemListItem
 import pl.bartelomelo.stalcraftpda.util.Resource
 import pl.bartelomelo.stalcraftpda.util.armorDeviceInventory
 import pl.bartelomelo.stalcraftpda.util.assultRiffleInventory
+import pl.bartelomelo.stalcraftpda.util.barrelInventory
 import pl.bartelomelo.stalcraftpda.util.bioArtefactInventory
 import pl.bartelomelo.stalcraftpda.util.clothesInventory
+import pl.bartelomelo.stalcraftpda.util.collimatorInventory
 import pl.bartelomelo.stalcraftpda.util.combatInventory
 import pl.bartelomelo.stalcraftpda.util.combinedInventory
 import pl.bartelomelo.stalcraftpda.util.electroArtefactInventory
+import pl.bartelomelo.stalcraftpda.util.forendInventory
 import pl.bartelomelo.stalcraftpda.util.gravityArtefactInventory
 import pl.bartelomelo.stalcraftpda.util.heavyInventory
 import pl.bartelomelo.stalcraftpda.util.machineGunInventory
+import pl.bartelomelo.stalcraftpda.util.magazineInventory
 import pl.bartelomelo.stalcraftpda.util.meleeInventory
+import pl.bartelomelo.stalcraftpda.util.otherAttachmentInventory
+import pl.bartelomelo.stalcraftpda.util.pistolHandleInventory
 import pl.bartelomelo.stalcraftpda.util.pistolInventory
 import pl.bartelomelo.stalcraftpda.util.scientistInventory
 import pl.bartelomelo.stalcraftpda.util.shotgunInventory
@@ -120,6 +126,36 @@ class ItemSubcategoryViewModel @Inject constructor(
                 }
                 "submachine_gun" -> {
                     submachineInventory[item.name]?.let {
+                        item.itemName = it
+                    }
+                }
+                "barrel" -> {
+                    barrelInventory[item.name]?.let {
+                        item.itemName = it
+                    }
+                }
+                "collimator_sights" -> {
+                    collimatorInventory[item.name]?.let {
+                        item.itemName = it
+                    }
+                }
+                "forend" -> {
+                    forendInventory[item.name]?.let {
+                        item.itemName = it
+                    }
+                }
+                "mag" -> {
+                    magazineInventory[item.name]?.let {
+                        item.itemName = it
+                    }
+                }
+                "other" -> {
+                    otherAttachmentInventory[item.name]?.let {
+                        item.itemName = it
+                    }
+                }
+                "pistol_handle" -> {
+                    pistolHandleInventory[item.name]?.let {
                         item.itemName = it
                     }
                 }
