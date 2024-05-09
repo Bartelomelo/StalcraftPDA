@@ -34,6 +34,8 @@ import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.ItemDescriptionSecti
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.ItemInfoSection
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.ItemPropertiesSection
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.ItemTopSection
+import pl.bartelomelo.stalcraftpda.ui.theme.BackgroundColor
+import pl.bartelomelo.stalcraftpda.ui.theme.BackgroundSecondary
 import pl.bartelomelo.stalcraftpda.ui.theme.LettersGray
 import pl.bartelomelo.stalcraftpda.util.parseTypeToColor
 
@@ -154,6 +156,114 @@ fun WeaponScreen(item: ItemTest) {
                                 item.infoBlocks.lastIndex
                             )
                         }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun WeaponDeviceScreen(item: ItemTest) {
+    Column {
+        Box(
+            modifier = Modifier
+                .weight(1.5f)
+        ) {
+            ItemTopSection(item = item)
+        }
+        val infoWeight = when (item.infoBlocks[0].elements.size) {
+            5 -> 1.2f
+            else -> 0.8f
+        }
+        Box(
+            modifier = Modifier
+                .weight(infoWeight)
+        ) {
+            ItemInfoSection(item = item)
+        }
+        val boxWeight = when (item.infoBlocks.size > 5) {
+            true -> 0.35f
+            false -> 0.5f
+        }
+        Box(
+            modifier = Modifier
+                .weight(boxWeight)
+        ){
+            WeaponDeviceSection(item = item)
+        }
+        Box(
+            modifier = Modifier
+                .weight(2f)
+        ) {
+            ItemDescriptionSection(properties = item.infoBlocks, index = item.infoBlocks.lastIndex)
+        }
+    }
+}
+
+@Composable
+fun WeaponDeviceSection(item: ItemTest) {
+    Column {
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(Color.DarkGray)
+        )
+
+        LazyColumn {
+            items(item.infoBlocks[3].elements.size) {
+                val backgroundColor = when {
+                    it % 2 == 0 -> BackgroundColor
+                    else -> BackgroundSecondary
+                }
+                Row (
+                    modifier = Modifier
+                        .background(backgroundColor)
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .weight(1.5f)
+                            .padding(start = 3.dp),
+                        text = item.infoBlocks[3].elements[it].name.lines.en,
+                        color = LettersGray
+                    )
+                    Text(
+                        modifier = Modifier
+                            .weight(1.5f)
+                            .padding(end = 3.dp),
+                        text = item.infoBlocks[3].elements[it].formatted.value.en,
+                        color = LettersGray,
+                        textAlign = TextAlign.End
+                    )
+                }
+            }
+        }
+        if (item.infoBlocks[4].type == "list") {
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(Color.DarkGray)
+            )
+            LazyColumn {
+                items(item.infoBlocks[4].elements.size) {
+                    Row {
+                        Text(
+                            modifier = Modifier
+                                .weight(1.5f)
+                                .padding(start = 3.dp),
+                            text = item.infoBlocks[4].elements[it].name.lines.en,
+                            color = LettersGray
+                        )
+                        Text(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 3.dp),
+                            text = item.infoBlocks[4].elements[it].formatted.value.en,
+                            color = LettersGray,
+                            textAlign = TextAlign.End
+                        )
                     }
                 }
             }

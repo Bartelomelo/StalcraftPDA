@@ -36,6 +36,7 @@ import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.containerdetailscree
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.grenadedetailscreen.GrenadeScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.medicinedetailscreen.MedicineScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.miscdetailscreen.MiscScreen
+import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.weapondetailscreen.WeaponDeviceScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.weapondetailscreen.WeaponScreen
 import pl.bartelomelo.stalcraftpda.ui.theme.BackgroundColor
 import pl.bartelomelo.stalcraftpda.ui.theme.BackgroundSecondary
@@ -65,7 +66,7 @@ fun ItemDetailScreen(
                     if (item.data.category.split("/").let { it[it.lastIndex] } != "device") ArmorScreen(item = item.data) else ArmorDeviceScreen(item = item.data)
                 }
                 "weapon" -> {
-                    if (item.data.category.split("/").let { it[it.lastIndex] } != "device") WeaponScreen(item = item.data) else ""
+                    if (item.data.category.split("/").let { it[it.lastIndex] } != "device") WeaponScreen(item = item.data) else WeaponDeviceScreen(item = item.data)
                 }
                 "artefact" -> ArtefactScreen(item = item.data)
                 "misc" -> MiscScreen(item = item.data)
@@ -216,7 +217,7 @@ fun ItemInfoSection(item: ItemTest) {
             if (item.category.split("/")[0] != "artefact") {
                 if (item.category != "medicine") {
                     rowWeight = when (item.infoBlocks[2].elements.size) {
-                        1 -> 0.6f
+                        1 -> 0.7f
                         2 -> 1f
                         3 -> 1.4f
                         4 -> 1.8f
@@ -273,7 +274,10 @@ fun ItemInfoSection(item: ItemTest) {
                                 }
                                 "text" -> {
                                     val color =
-                                        if (item.category == "bullet") LettersGray else RankGreen
+                                        when (item.category) {
+                                            "bullet", "weapon/device" -> LettersGray
+                                            else -> RankGreen
+                                        }
                                     Text(
                                         modifier = Modifier
                                             .weight(1f),
