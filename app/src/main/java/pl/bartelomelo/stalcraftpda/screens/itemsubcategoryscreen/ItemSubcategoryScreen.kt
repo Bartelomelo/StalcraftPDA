@@ -97,6 +97,7 @@ fun ItemSubcategoryList(
     if (itemList is Resource.Success) {
         LazyColumn(contentPadding = PaddingValues(15.dp)) {
             items(itemList.data!!.size) {
+                if (itemList.data[it].name != "_variants")
                 ItemSubcategoryRow(
                     rowIndex = it,
                     entries = itemList.data,

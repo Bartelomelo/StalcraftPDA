@@ -136,7 +136,7 @@ fun WeaponScreen(item: ItemTest) {
                             .height(200.dp)
                             .fillMaxWidth()
                     ) {
-                        WeaponDamageSection(item.infoBlocks[6])
+                        if (item.id == "dmqg5") WeaponDamageSection(item.infoBlocks[7]) else WeaponDamageSection(item.infoBlocks[6])
                     }
                 }
                 if (item.id != "y3jj0") {
