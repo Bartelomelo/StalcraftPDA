@@ -89,7 +89,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         ) {
-                            val route = if (it.arguments?.getString("subcategory")!! ==  it.arguments?.getString("itemId")!!) {
+                            val route = if (it.arguments?.getString("subcategory")!! == it.arguments?.getString("itemId")!!) {
                                 listOf(
                                     it.arguments?.getString("category")!!,
                                     null,

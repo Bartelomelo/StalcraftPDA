@@ -28,6 +28,7 @@ import coil.compose.AsyncImage
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.Element
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.InfoBlock
 import pl.bartelomelo.stalcraftpda.data.remote.responses.test.ItemTest
+import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.armordetailscreen.ArmorDeviceScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.armordetailscreen.ArmorScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.artefactdetailscreen.ArtefactScreen
 import pl.bartelomelo.stalcraftpda.screens.itemdetailscreen.bulletdetailscreen.BulletScreen
@@ -60,8 +61,12 @@ fun ItemDetailScreen(
     ) {
         if (item is Resource.Success) {
             when (item.data?.category!!.split("/")[0]) {
-                "armor" -> ArmorScreen(item = item.data)
-                "weapon" -> WeaponScreen(item = item.data)
+                "armor" -> {
+                    if (item.data.category.split("/").let { it[it.lastIndex] } != "device") ArmorScreen(item = item.data) else ArmorDeviceScreen(item = item.data)
+                }
+                "weapon" -> {
+                    if (item.data.category.split("/").let { it[it.lastIndex] } != "device") WeaponScreen(item = item.data) else ""
+                }
                 "artefact" -> ArtefactScreen(item = item.data)
                 "misc" -> MiscScreen(item = item.data)
                 "medicine" -> MedicineScreen(item = item.data)
@@ -207,7 +212,7 @@ fun ItemInfoSection(item: ItemTest) {
             }
         }
         var rowWeight = 0.9f
-        if (item.infoBlocks[2].type == "list" && item.infoBlocks[2].elements.isNotEmpty()  && item.category != "containers") {
+        if (item.infoBlocks.size > 2 && item.infoBlocks[2].type == "list" && item.infoBlocks[2].elements.isNotEmpty() && item.category != "containers") {
             if (item.category.split("/")[0] != "artefact") {
                 if (item.category != "medicine") {
                     rowWeight = when (item.infoBlocks[2].elements.size) {
@@ -349,7 +354,7 @@ fun ItemInfoSection(item: ItemTest) {
                     }
                 }
             }
-        } else if (item.infoBlocks[2].type == "text") {
+        } else if (item.infoBlocks.size > 2 && item.infoBlocks[2].type == "text") {
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()

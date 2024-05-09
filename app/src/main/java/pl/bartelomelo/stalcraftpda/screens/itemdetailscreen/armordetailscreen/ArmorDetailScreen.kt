@@ -94,6 +94,34 @@ fun ArmorScreen(item: ItemTest) {
 }
 
 @Composable
+fun ArmorDeviceScreen(item: ItemTest) {
+    Column {
+        Box(
+            modifier = Modifier
+                .weight(1.5f)
+        ) {
+            ItemTopSection(item = item)
+        }
+        val infoWeight = when (item.infoBlocks[0].elements.size) {
+            2 -> 0.5f
+            else -> 0.7f
+        }
+        Box(
+            modifier = Modifier
+                .weight(infoWeight)
+        ) {
+            ItemInfoSection(item = item)
+        }
+        Box(
+            modifier = Modifier
+                .weight(4f)
+        ) {
+            ItemDescriptionSection(properties = item.infoBlocks, index = item.infoBlocks.lastIndex)
+        }
+    }
+}
+
+@Composable
 fun ArmorPropertiesSection(properties: List<Element>) {
     Column {
         Spacer(
